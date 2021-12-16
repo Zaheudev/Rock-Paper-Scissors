@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { client } from "../../App";
 import Result from "./Result";
 import data, { dataActions } from "../../store/data";
+import { pageActions } from "../../store/page.js";
 import Button from "../UI/Button";
+import Room from "./Room";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
@@ -48,7 +50,10 @@ const BotRoom = (props) => {
     setSymbol(e.target.innerHTML);
     client.send(
       JSON.stringify(
-        new Message("ClientSymbolBOT", { symbol: e.target.innerHTML, code: code })
+        new Message("ClientSymbolBOT", {
+          symbol: e.target.innerHTML,
+          code: code,
+        })
       )
     );
   };
@@ -56,21 +61,24 @@ const BotRoom = (props) => {
   const exitRoom = () => {
     client.send(JSON.stringify(new Message("ExitBotRoom", code)));
     dispatch(dataActions.clear());
-    props.exit();
+    dispatch(pageActions.exitBot());
   };
 
   return (
-    <div>
-      <Result client={symbol} botSymbol={botSymbol} winner={roundWinner} />
+    <React.Fragment>
       <div>
-        <Button state={button} title="Rock" action={selectSymbol} />
-        <Button state={button} title="Paper" action={selectSymbol} />
-        <Button state={button} title="Scissors" action={selectSymbol} />
-        <Button title="Back" action={exitRoom} />
+        <Result client={symbol} botSymbol={botSymbol} winner={roundWinner} />
+        <div>
+          <Button state={button} title="Rock" action={selectSymbol} />
+          <Button state={button} title="Paper" action={selectSymbol} />
+          <Button state={button} title="Scissors" action={selectSymbol} />
+          <Button title="Back" action={exitRoom} />
+        </div>
+        <h3>{`ROUND ${rounds}`}</h3>
+        {button && <h1>{`${winner ? "GEORGE" : "BOT"} WON`}</h1>}
       </div>
-      <h3>{`ROUND ${rounds}`}</h3>
-      {button && <h1>{`${winner ? "GEORGE" : "BOT"} WON`}</h1>}
-    </div>
+      <Room/>
+    </React.Fragment>
   );
 };
 

@@ -1,17 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const initalState = { isPlaying: false };
+const initalState = { isPlayingAI: false, isPlayingMP: false };
 
 const pageSlice = createSlice({
   name: "room",
   initialState: initalState,
   reducers: {
-    join(state) {
-      state.isPlaying = true;
+    joinBot(state) {
+      state.isPlayingAI = true;
     },
 
-    exit(state) {
-      state.isPlaying = false;
+    exitBot(state) {
+      state.isPlayingAI = false;
+    },
+
+    joinMP(state) {
+      state.isPlayingMP = true;
+    },
+
+    exitMP(state) {
+      state.isPlayingMP = false;
     },
   },
 });

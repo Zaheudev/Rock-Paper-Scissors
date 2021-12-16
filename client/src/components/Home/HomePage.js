@@ -11,8 +11,8 @@ const HomePage = (props) => {
 
   return (
     <Fragment>
-      <button onClick={props.sendData}>Play Now!</button>
-      <button>Join Room!</button>
+      <button onClick={props.sendBotData}>Play Now!</button>
+      <button onClick={props.sendMpData}>Join Room!</button>
       <p>{!data ? "Loading..." : data}</p>
     </Fragment>
   );

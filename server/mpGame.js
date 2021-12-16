@@ -12,8 +12,12 @@ function mpGame(user1, user2, id) {
     return this.user2;
   };
 
-  this.id = function () {
+  this.getId = function () {
     return this.id;
+  };
+
+  this.getState = function () {
+    return this.gameState;
   };
 
   this.setUser1 = function (user) {
@@ -22,6 +26,10 @@ function mpGame(user1, user2, id) {
 
   this.setUser2 = function (user) {
     this.user2 = user;
+  };
+
+  this.setState = function (state) {
+    this.gameState = state;
   };
 }
 module.exports = mpGame;

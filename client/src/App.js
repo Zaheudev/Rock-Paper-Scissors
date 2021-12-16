@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 
 import "./App.css";
 import HomePage from "./components/Home/HomePage";
-import Room from "./components/Rooms/Room";
+import BotRoom from "./components/Rooms/BotRoom";
 import { pageActions } from "./store/page.js";
 import { dataActions } from "./store/data.js";
+import PvPRoom from "./components/Rooms/PvPRoom";
 
 var W3CWebSocket = require("websocket").w3cwebsocket;
 
@@ -29,36 +30,56 @@ export function Message(type, data) {
 }
 
 const App = () => {
-  const isPlaying = useSelector((state) => state.page.isPlaying);
+  const isPlayingBot = useSelector((state) => state.page.isPlayingAI);
+  const isPlayingMP = useSelector((state) => state.page.isPlayingMP);
   const dispatch = useDispatch();
 
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
     console.log(msg);
-    if (msg.type === "playWithBotConfirm") {
-      insertData(msg.data.user.name, msg.data.id);
-      changeScreen();
+    switch (msg.type) {
+      case "playWithBotConfirm":
+        insertData(msg.data.user.name, msg.data.id);
+        changeScreenBot();
+        break;
+      case "playMpConfirm":
+        changeScreenMP();
+        break;
     }
   };
 
-  const sendData = () => {
-    client.send(JSON.stringify(new Message("play")));
+  const sendBotMsj = () => {
+    client.send(JSON.stringify(new Message("playAI")));
   };
 
-  const changeScreen = () => {
-    dispatch(pageActions.join());
+  const sendMultiplayerMsj = () => {
+    client.send(JSON.stringify(new Message("playMP")));
   };
+
+  const changeScreenBot = () => {
+    dispatch(pageActions.joinBot());
+  };
+
+  const changeScreenMP = () => {
+    dispatch(pageActions.joinMP());
+  };
+
+  let flag = (
+    <HomePage sendMpData={sendMultiplayerMsj} sendBotData={sendBotMsj} />
+  );
+
+  if (isPlayingBot) {
+    flag = <BotRoom />;
+  } else if (isPlayingMP) {
+    flag = <PvPRoom />;
+  }
 
   const insertData = (name, code) => {
     dispatch(dataActions.setName(name));
     dispatch(dataActions.setCode(code));
   };
 
-  return (
-    <div className="App">
-      {!isPlaying ? <HomePage sendData={sendData} /> : <Room />}
-    </div>
-  );
+  return <div className="App">{flag}</div>;
 };
 
 export default App;

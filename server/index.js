@@ -49,12 +49,17 @@ wsServer.on("request", function (request) {
     let msg = JSON.parse(message.utf8Data);
     console.log(msg);
     switch (msg.type) {
-      case "play":
-        let code = generateCode(6);
-        aiGames.set(code, new aiGame(new User("George", Math.random()), code));
+      case "playAI":
+        let codeAI = generateCode(6);
+        aiGames.set(codeAI, new aiGame(new User("George", con.id, con), codeAI));
         con.send(
-          JSON.stringify(new Message("playWithBotConfirm", aiGames.get(code)))
+          JSON.stringify(new Message("playWithBotConfirm", aiGames.get(codeAI)), getCircularReplacer())
         );
+        break;
+      case "playMP":
+        let codeMP = generateCode(6);
+        mpGames.set(codeMP, new mpGame(new User("George", con.id, con), null, codeMP));
+        con.send(JSON.stringify(new Message("playMpConfirm", mpGames.get(codeMP)), getCircularReplacer()));
         break;
       case "ClientSymbolBOT":
         let result = gameBot(msg.data.symbol);
@@ -147,5 +152,18 @@ function generateCode(length) {
   }
   return result;
 }
+
+function getCircularReplacer(){
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
 
 console.log("Server started on port " + PORT);
