@@ -39,11 +39,43 @@ const App = () => {
     console.log(msg);
     switch (msg.type) {
       case "playWithBotConfirm":
-        insertData(msg.data.user.name, msg.data.id);
+        insertData(msg.data.user.name, msg.data.id, msg.data.bot.name);
         changeScreenBot();
         break;
       case "playMpConfirm":
+        insertData(
+          msg.data.user1.name,
+          msg.data.id,
+          null,
+          msg.data.gameState,
+          msg.data.user1.hisTurn
+        );
         changeScreenMP();
+        break;
+      case "joinRoom":
+        insertData(
+          msg.data.user2.name,
+          msg.data.id,
+          msg.data.user1.name,
+          msg.data.gameState,
+          msg.data.user2.hisTurn
+        );
+        changeScreenMP();
+        break;
+      case "enemyJoin":
+        insertData(
+          msg.data.user1.name,
+          msg.data.id,
+          msg.data.user2.name,
+          msg.data.gameState,
+          msg.data.user1.hisTurn
+        );
+        break;
+      case "You Turned":
+        dispatch(dataActions.setTurn(false));
+        break;
+      case "enemyTurned":
+        dispatch(dataActions.setTurn(true));
         break;
     }
   };
@@ -74,9 +106,12 @@ const App = () => {
     flag = <PvPRoom />;
   }
 
-  const insertData = (name, code) => {
+  const insertData = (name, code, enemyName, state, turn) => {
     dispatch(dataActions.setName(name));
     dispatch(dataActions.setCode(code));
+    dispatch(dataActions.setEnemyName(enemyName));
+    dispatch(dataActions.setState(state));
+    dispatch(dataActions.setTurn(turn));
   };
 
   return <div className="App">{flag}</div>;

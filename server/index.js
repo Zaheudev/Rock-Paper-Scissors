@@ -13,6 +13,7 @@ const app = express();
 const server = http.createServer(app).listen(PORT);
 
 var websockets = new Map();
+var users = new Map();
 var aiGames = new Map();
 var mpGames = new Map();
 var conId = 0;
@@ -51,53 +52,150 @@ wsServer.on("request", function (request) {
     switch (msg.type) {
       case "playAI":
         let codeAI = generateCode(6);
-        aiGames.set(codeAI, new aiGame(new User("George", con.id, con), codeAI));
+        aiGames.set(
+          codeAI,
+          new aiGame(new User("George", con.id, con), codeAI)
+        );
+        users.set(con.id, aiGames.get(codeAI).getUser1());
         con.send(
-          JSON.stringify(new Message("playWithBotConfirm", aiGames.get(codeAI)), getCircularReplacer())
+          JSON.stringify(
+            new Message("playWithBotConfirm", aiGames.get(codeAI)),
+            getCircularReplacer()
+          )
         );
         break;
       case "playMP":
-        let codeMP = generateCode(6);
-        mpGames.set(codeMP, new mpGame(new User("George", con.id, con), null, codeMP));
-        con.send(JSON.stringify(new Message("playMpConfirm", mpGames.get(codeMP)), getCircularReplacer()));
+        if (mpGames.size != 0) {
+          let gameFound = false;
+          for (const [id, game] of mpGames) {
+            if (game.getUser2() === null && game.getState() === "Waiting") {
+              gameFound = true;
+              game.setUser2(new User("Daniel", con.id, con, false));
+              users.set(con.id, game.getUser2());
+              game.setState("Starting Game");
+              con.send(
+                JSON.stringify(
+                  new Message("joinRoom", game),
+                  getCircularReplacer()
+                )
+              );
+              game
+                .getUser1()
+                .getWs()
+                .send(
+                  JSON.stringify(
+                    new Message("enemyJoin", game),
+                    getCircularReplacer()
+                  )
+                );
+              console.log("Game found, joining room " + id);
+              break;
+            }
+          }
+          if (!gameFound) {
+            console.log("No free game, creating new game");
+
+            let codeMP = generateCode(6);
+            mpGames.set(
+              codeMP,
+              new mpGame(new User("George", con.id, con, true), null, codeMP)
+            );
+            users.set(con.id, mpGames.get(codeMP).getUser1());
+            con.send(
+              JSON.stringify(
+                new Message("playMpConfirm", mpGames.get(codeMP)),
+                getCircularReplacer()
+              )
+            );
+          }
+        } else {
+          let codeMP = generateCode(6);
+          mpGames.set(
+            codeMP,
+            new mpGame(new User("George", con.id, con, true), null, codeMP)
+          );
+          users.set(con.id, mpGames.get(codeMP).getUser1());
+          con.send(
+            JSON.stringify(
+              new Message("playMpConfirm", mpGames.get(codeMP)),
+              getCircularReplacer()
+            )
+          );
+        }
+        break;
+      case "ClientSymbolMP":
+        let tempGame = mpGames.get(msg.data.code);
+        let tempName = null;
+        for (const [id, user] of users) {
+          if (id === con.id) {
+            if (user.getHisTurn()) {
+              user.setSymbol(msg.data.symbol);
+              user.setHisTurn(false);
+              tempName = user.getName();
+              for (const [id, user] of users) {
+                if (user.getName() != tempName) {
+                  user.setHisTurn(true);
+                  user
+                    .getWs()
+                    .send(
+                      JSON.stringify(
+                        new Message("enemyTurned", user),
+                        getCircularReplacer()
+                      )
+                    );
+                }
+              }
+              user
+                .getWs()
+                .send(
+                  JSON.stringify(
+                    new Message("You Turned", user),
+                    getCircularReplacer()
+                  )
+                );
+            } else {
+              console.log("HACKER");
+            }
+          }
+        }
         break;
       case "ClientSymbolBOT":
         let result = gameBot(msg.data.symbol);
         let game = aiGames.get(msg.data.code);
         let winner = false;
         console.log(result);
-        if (game) {
+        if (tempGame) {
           if (
-            game.rounds > 0 &&
-            game.getUser().getWinCounter() < 2 &&
-            game.rounds > 0 &&
-            game.getBot().getWinCounter() < 2
+            tempGame.rounds > 0 &&
+            tempGame.getUser().getWinCounter() < 2 &&
+            tempGame.rounds > 0 &&
+            tempGame.getBot().getWinCounter() < 2
           ) {
             if (result.result === 1) {
               aiGames.get(msg.data.code).getUser().winner();
-              console.log(`CLIENT WINS: ${game.getUser().getWinCounter()}`);
+              console.log(`CLIENT WINS: ${tempGame.getUser().getWinCounter()}`);
             } else if (result.result === 2) {
-              game.getBot().winner();
-              console.log(`BOT WINS: ${game.getBot().getWinCounter()}`);
+              tempGame.getBot().winner();
+              console.log(`BOT WINS: ${tempGame.getBot().getWinCounter()}`);
             } else {
               con.send(JSON.stringify(new Message("result", result)));
-              console.log(game.getRounds());
+              console.log(tempGame.getRounds());
               break;
             }
             if (
-              game.getBot().getWinCounter() === 2 ||
-              game.getUser().getWinCounter() === 2
+              tempGame.getBot().getWinCounter() === 2 ||
+              tempGame.getUser().getWinCounter() === 2
             ) {
               console.log("WINNER TRIGGER");
-              if (game.getUser().getWinCounter() === 2) {
+              if (tempGame.getUser().getWinCounter() === 2) {
                 winner = true;
               }
               con.send(JSON.stringify(new Message("Winner", winner)));
               aiGames.delete(msg.data.code);
             }
             con.send(JSON.stringify(new Message("result", result)));
-            game.newRound(con, JSON.stringify(new Message("NewRound")));
-            console.log(game.getRounds());
+            tempGame.newRound(con, JSON.stringify(new Message("NewRound")));
+            console.log(tempGame.getRounds());
           }
         }
 
@@ -153,7 +251,7 @@ function generateCode(length) {
   return result;
 }
 
-function getCircularReplacer(){
+function getCircularReplacer() {
   const seen = new WeakSet();
   return (key, value) => {
     if (typeof value === "object" && value !== null) {
@@ -164,6 +262,6 @@ function getCircularReplacer(){
     }
     return value;
   };
-};
+}
 
 console.log("Server started on port " + PORT);

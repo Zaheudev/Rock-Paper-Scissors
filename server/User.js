@@ -1,8 +1,10 @@
-function User(name, id, ws) {
+function User(name, id, ws, hisTurn) {
   this.name = name;
   this.id = id;
   this.winCounter = 0;
   this.ws = ws;
+  this.hisTurn = hisTurn;
+  this.symbol = "";
 
   this.getName = function () {
     return this.name;
@@ -12,12 +14,32 @@ function User(name, id, ws) {
     return this.id;
   };
 
+  this.getHisTurn = function () {
+    return this.hisTurn;
+  };
+
   this.winner = function () {
     this.winCounter++;
-  }
+  };
 
   this.getWinCounter = function () {
     return this.winCounter;
+  };
+
+  this.getWs = function () {
+    return this.ws;
+  };
+
+  this.getSymbol = function () {
+    return this.symbol;
+  };
+
+  this.setHisTurn = function (boolean) {
+    this.hisTurn = boolean;
+  };
+
+  this.setSymbol = function (symbol) {
+    this.symbol = symbol;
   };
 }
 

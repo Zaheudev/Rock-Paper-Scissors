@@ -13,6 +13,7 @@ const BotRoom = (props) => {
   const [roundWinner, setRoundWinner] = useState(null);
   const [button, setButton] = useState(false);
   const name = useSelector((state) => state.data.name);
+  const enemyName = useSelector((state) => state.data.enemyName);
   const code = useSelector((state) => state.data.code);
   const rounds = useSelector((state) => state.data.rounds);
   const winner = useSelector((state) => state.data.winner);
@@ -23,6 +24,7 @@ const BotRoom = (props) => {
     this.type = type;
     this.data = data;
   }
+  
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
     console.log(msg);
@@ -67,7 +69,7 @@ const BotRoom = (props) => {
   return (
     <React.Fragment>
       <div>
-        <Result client={symbol} botSymbol={botSymbol} winner={roundWinner} />
+        <Result name={name} enemyName={enemyName} client={symbol} botSymbol={botSymbol} winner={roundWinner} />
         <div>
           <Button state={button} title="Rock" action={selectSymbol} />
           <Button state={button} title="Paper" action={selectSymbol} />
@@ -75,7 +77,7 @@ const BotRoom = (props) => {
           <Button title="Back" action={exitRoom} />
         </div>
         <h3>{`ROUND ${rounds}`}</h3>
-        {button && <h1>{`${winner ? "GEORGE" : "BOT"} WON`}</h1>}
+        {button && <h1>{`${winner ? name : enemyName} WON`}</h1>}
       </div>
       <Room/>
     </React.Fragment>

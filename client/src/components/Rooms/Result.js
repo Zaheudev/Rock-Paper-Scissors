@@ -11,9 +11,9 @@ const Result = (props) => {
   }
   return (
     <div>
-      <p>{`BOT SYMBOL: ${props.botSymbol}`}</p>
+      <p>{`${props.enemyName} SYMBOL: ${props.botSymbol}`}</p>
       <p>{result}</p>
-      <p>{`CLIENT SYMBOL: ${props.client}`}</p>
+      <p>{`${props.name} SYMBOL: ${props.client}`}</p>
     </div>
   );
 };
