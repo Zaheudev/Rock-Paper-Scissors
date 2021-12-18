@@ -3,6 +3,7 @@ function mpGame(user1, user2, id) {
   this.user2 = user2;
   this.id = id;
   this.gameState = "Waiting";
+  this.rounds = 3;
 
   this.getUser1 = function () {
     return this.user1;
@@ -18,6 +19,16 @@ function mpGame(user1, user2, id) {
 
   this.getState = function () {
     return this.gameState;
+  };
+
+  this.getRounds = function () {
+    return this.rounds;
+  };
+
+  this.newRound = function () {
+    if (this.rounds > 0) {
+      this.rounds--;
+    }
   };
 
   this.setUser1 = function (user) {

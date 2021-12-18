@@ -9,7 +9,7 @@ import Room from "./Room";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
-  const [botSymbol, setBotSymbol] = useState("");
+  const [enemySymbol, setEnemySymbol] = useState("");
   const [roundWinner, setRoundWinner] = useState(null);
   const [button, setButton] = useState(false);
   const name = useSelector((state) => state.data.name);
@@ -36,7 +36,7 @@ const BotRoom = (props) => {
         } else if (msg.data.result === 2) {
           dispatch(dataActions.winUser2());
         }
-        setBotSymbol(msg.data.botSymbol);
+        setEnemySymbol(msg.data.botSymbol);
         setRoundWinner(msg.data.result);
         break;
       case "Winner":
@@ -69,7 +69,7 @@ const BotRoom = (props) => {
   return (
     <React.Fragment>
       <div>
-        <Result name={name} enemyName={enemyName} client={symbol} botSymbol={botSymbol} winner={roundWinner} />
+        <Result name={name} enemyName={enemyName} client={symbol} botSymbol={enemySymbol} winner={roundWinner} />
         <div>
           <Button state={button} title="Rock" action={selectSymbol} />
           <Button state={button} title="Paper" action={selectSymbol} />

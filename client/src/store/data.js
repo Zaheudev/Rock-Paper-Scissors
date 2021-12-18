@@ -4,6 +4,8 @@ const initalState = {
   code: null,
   name: null,
   enemyName: null,
+  enemySymbol: null,
+  userKey: 1,
   user1Count: 0,
   user2Count: 0,
   rounds: 1,
@@ -22,6 +24,14 @@ const dataSlice = createSlice({
 
     setEnemyName(state, action) {
       state.enemyName = action.payload;
+    },
+
+    setEnemySymbol(state, action) {
+      state.enemySymbol = action.payload;
+    },
+
+    setUserKey(state, action) {
+      state.userKey = action.payload;
     },
 
     setCode(state, action) {
@@ -58,6 +68,8 @@ const dataSlice = createSlice({
       state.code = null;
       state.name = null;
       state.enemyName = null;
+      state.enemySymbol = null;
+      state.userKey = 1;
       state.user1Count = 0;
       state.user2Count = 0;
       state.rounds = 1;

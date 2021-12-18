@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import "./App.css";
@@ -6,7 +6,11 @@ import HomePage from "./components/Home/HomePage";
 import BotRoom from "./components/Rooms/BotRoom";
 import { pageActions } from "./store/page.js";
 import { dataActions } from "./store/data.js";
+import { authActions } from "./store/auth.js";
+import Login from "./components/Authentication/Login";
+import Register from "./components/Authentication/Register";
 import PvPRoom from "./components/Rooms/PvPRoom";
+import Authenticate from "./components/Authentication/Authenticate";
 
 var W3CWebSocket = require("websocket").w3cwebsocket;
 
@@ -32,6 +36,10 @@ export function Message(type, data) {
 const App = () => {
   const isPlayingBot = useSelector((state) => state.page.isPlayingAI);
   const isPlayingMP = useSelector((state) => state.page.isPlayingMP);
+  const IsAuthenticated = useSelector((state) => state.auth.IsAuthenticated);
+  const key = useSelector((state) => state.data.userKey);
+  const [roundWinner, setRoundWinner] = useState(null);
+
   const dispatch = useDispatch();
 
   client.onmessage = function (message) {
@@ -39,7 +47,7 @@ const App = () => {
     console.log(msg);
     switch (msg.type) {
       case "playWithBotConfirm":
-        insertData(msg.data.user.name, msg.data.id, msg.data.bot.name);
+        insertData(msg.data.user.name, msg.data.id, msg.data.bot.name, 1);
         changeScreenBot();
         break;
       case "playMpConfirm":
@@ -47,6 +55,7 @@ const App = () => {
           msg.data.user1.name,
           msg.data.id,
           null,
+          1,
           msg.data.gameState,
           msg.data.user1.hisTurn
         );
@@ -57,6 +66,7 @@ const App = () => {
           msg.data.user2.name,
           msg.data.id,
           msg.data.user1.name,
+          2,
           msg.data.gameState,
           msg.data.user2.hisTurn
         );
@@ -67,6 +77,7 @@ const App = () => {
           msg.data.user1.name,
           msg.data.id,
           msg.data.user2.name,
+          1,
           msg.data.gameState,
           msg.data.user1.hisTurn
         );
@@ -76,6 +87,26 @@ const App = () => {
         break;
       case "enemyTurned":
         dispatch(dataActions.setTurn(true));
+        break;
+      case "RoundEnded":
+        dispatch(dataActions.newRound());
+        if (key === 2) {
+          dispatch(dataActions.setEnemySymbol(msg.data.game.user1.symbol));
+        } else if (key === 1) {
+          dispatch(dataActions.setEnemySymbol(msg.data.game.user2.symbol));
+        }
+        if (msg.data.result === 1) {
+          dispatch(dataActions.winUser1());
+          setRoundWinner(msg.data.result);
+        } else if (msg.data.result === 2) {
+          dispatch(dataActions.winUser2());
+          setRoundWinner(msg.data.result);
+        }
+      case "GameWon":
+        dispatch(dataActions.setWinner(msg.data.user));
+        break;
+      case "GameLost":
+        dispatch(dataActions.setWinner(msg.data.user));
         break;
     }
   };
@@ -103,13 +134,16 @@ const App = () => {
   if (isPlayingBot) {
     flag = <BotRoom />;
   } else if (isPlayingMP) {
-    flag = <PvPRoom />;
+    flag = <PvPRoom result={roundWinner} />;
+  }else if(!IsAuthenticated){
+    flag = <Authenticate />
   }
 
-  const insertData = (name, code, enemyName, state, turn) => {
+  const insertData = (name, code, enemyName, key, state, turn) => {
     dispatch(dataActions.setName(name));
     dispatch(dataActions.setCode(code));
     dispatch(dataActions.setEnemyName(enemyName));
+    dispatch(dataActions.setUserKey(key));
     dispatch(dataActions.setState(state));
     dispatch(dataActions.setTurn(turn));
   };

@@ -1,6 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const initalAuthState = { IsAuthenticated: false };
+const initalAuthState = {
+  IsAuthenticated: true,
+  isRegister: false,
+  isLoging: false,
+};
 
 const authSlice = createSlice({
   name: "authentication",
@@ -12,6 +16,20 @@ const authSlice = createSlice({
 
     logout(state) {
       state.IsAuthenticated = false;
+    },
+
+    setIsRegisterPage(state, action) {
+      state.isRegister = action.payload;
+    },
+
+    setIsLogingPage(state, action) {
+      state.isLoging = action.payload;
+    },
+
+    clear(state) {
+      state.IsAuthenticated = false;
+      state.isRegister = false;
+      state.isLoging = false;
     },
   },
 });
