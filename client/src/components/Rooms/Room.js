@@ -6,6 +6,7 @@ const Room = (props) => {
   const user1Wins = useSelector((state) => state.data.user1Count);
   const name = useSelector((state) => state.data.name);
   const enemyName = useSelector((state) => state.data.enemyName);
+  const state = useSelector((state) => state.data.state);
   const key = useSelector((state) => state.data.userKey);
 
   let enemyResult = null;
@@ -22,9 +23,8 @@ const Room = (props) => {
   return (
     <React.Fragment>
       <div>
-        <p>{enemyResult}</p>
+        {state !== "Waiting" ? <p>{enemyResult}</p> : "Waiting for Player..."}
         <p>{userResult}</p>
-        <h2>{`YOU ARE ${name}`}</h2>
       </div>
     </React.Fragment>
   );

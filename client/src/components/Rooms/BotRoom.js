@@ -6,13 +6,19 @@ import data, { dataActions } from "../../store/data";
 import { pageActions } from "../../store/page.js";
 import Button from "../UI/Button";
 import Room from "./Room";
+import classes from "./BotRoom.module.css";
+
+import rock from "../../assets/rock.png";
+import paper from "../../assets/paper.png";
+import scissors from "../../assets/scissors.png";
+import ButtonImage from "../UI/ButtonImage";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
-  const [enemySymbol, setEnemySymbol] = useState("");
   const [roundWinner, setRoundWinner] = useState(null);
   const [button, setButton] = useState(false);
   const name = useSelector((state) => state.data.name);
+  const enemySymbol = useSelector((state) => state.data.enemySymbol);
   const enemyName = useSelector((state) => state.data.enemyName);
   const code = useSelector((state) => state.data.code);
   const rounds = useSelector((state) => state.data.rounds);
@@ -24,7 +30,7 @@ const BotRoom = (props) => {
     this.type = type;
     this.data = data;
   }
-  
+
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
     console.log(msg);
@@ -36,8 +42,7 @@ const BotRoom = (props) => {
         } else if (msg.data.result === 2) {
           dispatch(dataActions.winUser2());
         }
-        setEnemySymbol(msg.data.botSymbol);
-        setRoundWinner(msg.data.result);
+        dispatch(dataActions.setEnemySymbol(msg.data.botSymbol));
         break;
       case "Winner":
         setButton(true);
@@ -48,12 +53,36 @@ const BotRoom = (props) => {
     }
   };
 
-  const selectSymbol = (e) => {
-    setSymbol(e.target.innerHTML);
+  const selectRock = (e) => {
+    setSymbol("Rock");
     client.send(
       JSON.stringify(
         new Message("ClientSymbolBOT", {
-          symbol: e.target.innerHTML,
+          symbol: "Rock",
+          code: code,
+        })
+      )
+    );
+  };
+
+  const selectPaper = (e) => {
+    setSymbol("Paper");
+    client.send(
+      JSON.stringify(
+        new Message("ClientSymbolBOT", {
+          symbol: "Paper",
+          code: code,
+        })
+      )
+    );
+  };
+
+  const selectScissors = (e) => {
+    setSymbol("Scissors");
+    client.send(
+      JSON.stringify(
+        new Message("ClientSymbolBOT", {
+          symbol: "Scissors",
           code: code,
         })
       )
@@ -68,18 +97,28 @@ const BotRoom = (props) => {
 
   return (
     <React.Fragment>
-      <div>
-        <Result name={name} enemyName={enemyName} client={symbol} enemySymbol={enemySymbol} winner={roundWinner} />
-        <div>
-          <Button state={button} title="Rock" action={selectSymbol} />
-          <Button state={button} title="Paper" action={selectSymbol} />
-          <Button state={button} title="Scissors" action={selectSymbol} />
-          <Button title="Back" action={exitRoom} />
-        </div>
-        <h3>{`ROUND ${rounds}`}</h3>
+      <h3>{`ROUND ${rounds}`}</h3>
+      <div className={classes.page}>
+        <Result
+          name={name}
+          enemyName={enemyName}
+          client={symbol}
+          enemySymbol={enemySymbol}
+          winner={roundWinner}
+        />
         {button && <h1>{`${winner ? name : enemyName} WON`}</h1>}
       </div>
-      <Room/>
+      <div className={classes.buttons}>
+        <ButtonImage symbol={rock} action={selectRock} />
+        <ButtonImage symbol={paper} action={selectPaper} />
+        <ButtonImage symbol={scissors} action={selectScissors} />
+      </div>
+      <h2>{`YOU ARE ${name}`}</h2>
+      <Button title="Exit" action={exitRoom} />
+
+      <div className={classes.room}>
+        <Room />
+      </div>
     </React.Fragment>
   );
 };

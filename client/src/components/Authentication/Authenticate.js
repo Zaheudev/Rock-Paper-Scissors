@@ -4,6 +4,10 @@ import auth, { authActions } from "../../store/auth";
 import Login from "./Login";
 import Register from "./Register";
 
+import classes from "./Authenticate.module.css";
+
+import image from "../../assets/logo1.png";
+
 import Button from "../UI/Button";
 
 const Authenticate = () => {
@@ -21,7 +25,7 @@ const Authenticate = () => {
   };
 
   let flag = (
-    <div>
+    <div className={classes.card}>
       <Button title={"Login In"} action={LogIn} />
       <Button title={"Register"} action={SignUp} />
     </div>
@@ -33,7 +37,14 @@ const Authenticate = () => {
     flag = <Register />;
   }
 
-  return <div>{flag}</div>;
+  return (
+    <div>
+      <header>
+      <img draggable="false" src={image}></img>
+      </header>
+      <div>{flag}</div>
+    </div>
+  );
 };
 
 export default Authenticate;

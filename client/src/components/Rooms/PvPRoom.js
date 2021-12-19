@@ -5,8 +5,15 @@ import { pageActions } from "../../store/page";
 import { client } from "../../App";
 
 import Button from "../UI/Button";
+import ButtonImage from "../UI/ButtonImage.js";
 import Room from "./Room.js";
 import Result from "./Result";
+
+import classes from "./PvPRoom.module.css";
+
+import rock from "../../assets/rock.png";
+import paper from "../../assets/paper.png";
+import scissors from "../../assets/scissors.png";
 
 const PvPRoom = (props) => {
   const [symbol, setSymbol] = useState("");
@@ -27,12 +34,38 @@ const PvPRoom = (props) => {
     this.data = data;
   }
 
-  const selectSymbol = (e) => {
-    setSymbol(e.target.innerHTML);
+  const selectRock = (e) => {
+    setSymbol("Rock");
     client.send(
       JSON.stringify(
         new Message("ClientSymbolMP", {
-          symbol: e.target.innerHTML,
+          symbol: "Rock",
+          code: code,
+          name: name,
+        })
+      )
+    );
+  };
+
+  const selectPaper = (e) => {
+    setSymbol("Paper");
+    client.send(
+      JSON.stringify(
+        new Message("ClientSymbolMP", {
+          symbol: "Paper",
+          code: code,
+          name: name,
+        })
+      )
+    );
+  };
+
+  const selectScissors = (e) => {
+    setSymbol("Scissors");
+    client.send(
+      JSON.stringify(
+        new Message("ClientSymbolMP", {
+          symbol: "Scissors",
           code: code,
           name: name,
         })
@@ -41,10 +74,12 @@ const PvPRoom = (props) => {
   };
 
   const exitRoom = (e) => {
-    client.send(JSON.stringify(new Message("ExitMPRoom", {user: key, code: code})));
+    client.send(
+      JSON.stringify(new Message("ExitMPRoom", { user: key, code: code }))
+    );
     dispatch(dataActions.clear());
     dispatch(pageActions.exitMP());
-  }
+  };
 
   let flag = true;
   let stateRender = "Your Turn";
@@ -70,26 +105,37 @@ const PvPRoom = (props) => {
   }
 
   return (
-    <div>
-      <Result
-        name={name}
-        enemyName={enemyName}
-        client={symbol}
-        enemySymbol={enemySymbol}
-        winner={props.result}
-      />
-      <div>
-        <Button state={flag} title="Rock" action={selectSymbol} />
-        <Button state={flag} title="Paper" action={selectSymbol} />
-        <Button state={flag} title="Scissors" action={selectSymbol} />
-        <Button title="Exit" action={exitRoom} />
-      </div>
+    <React.Fragment>
       <h3>{`ROUND ${rounds}`}</h3>
-      {winner && <h1>{`${winner} WON`}</h1>}
-      {/* <h3>MULTIPLAYER ROOM</h3> */}
-      {!winner && <h2>{state === "Waiting" ? state : stateRender}</h2>}
-      <Room />
-    </div>
+      <div>
+        <div className={classes.page}>
+          <Result
+            name={name}
+            enemyName={enemyName}
+            client={symbol}
+            enemySymbol={enemySymbol}
+            winner={props.result}
+          />
+        </div>
+
+        {winner && <h1>{`${winner} WON`}</h1>}
+        <div className={classes.buttons}>
+          <ButtonImage symbol={rock} action={selectRock} />
+          <ButtonImage symbol={paper} action={selectPaper} />
+          <ButtonImage symbol={scissors} action={selectScissors} />
+        </div>
+        {!winner && (
+          <h2>
+            {state === "Waiting" ? `${state} For Player...` : stateRender}
+          </h2>
+        )}
+        <h2>{`YOU ARE ${name}`}</h2>
+        <Button title="Exit" action={exitRoom} />
+        <div className={classes.room}>
+          <Room />
+        </div>
+      </div>
+    </React.Fragment>
   );
 };
 

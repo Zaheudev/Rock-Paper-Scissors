@@ -3,9 +3,9 @@ import Button from "../UI/Button";
 
 import classes from "./Auth.module.css";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { authActions } from "../../store/auth";
+import auth, { authActions } from "../../store/auth";
 import { client } from "../../App";
 
 function Message(type, data) {
@@ -14,6 +14,8 @@ function Message(type, data) {
 }
 
 const Login = () => {
+  const error = useSelector((state) => state.auth.error);
+
   const dispatch = useDispatch();
 
   const SignIn = (event) => {
@@ -31,10 +33,18 @@ const Login = () => {
       );
       console.log("Signing in");
     }
+    if (username.trim().length < 3 && pass.trim().length > 6) {
+      dispatch(authActions.setError("Username too short! over 3 chars"));
+    } else if (pass.trim().length < 6 && username.trim().length > 3) {
+      dispatch(authActions.setError("Password too short! over 6 chars"));
+    } else {
+      dispatch(authActions.setError("Insert correct data"));
+    }
   };
 
   const Cancel = () => {
     dispatch(authActions.setIsLogingPage(false));
+    dispatch(authActions.clear());
   };
 
   return (
@@ -43,13 +53,14 @@ const Login = () => {
       <section>
         <form onSubmit={SignIn}>
           <div className={classes.control}>
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" />
+            <label htmlFor="name">Username</label>
+            <input placeholder="Username" type="text" id="name" />
           </div>
           <div className={classes.control}>
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" />
+            <input placeholder="Password" type="password" id="password" />
           </div>
+          <p className={classes.error}>{error}</p>
           <Button title="Log In" type={"submit"} />
           <Button title="Cancel" action={Cancel} type={"button"} />
         </form>

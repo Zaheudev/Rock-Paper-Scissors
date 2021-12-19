@@ -289,14 +289,19 @@ wsServer.on("request", function (request) {
         });
         break;
       case "LoginIn":
+        let flag = false;
         db.each('select * from users', (err, row) =>{
           console.log(row);
           if(row.name === msg.data.username && row.password.toString() === msg.data.password){
+            flag = true;
             console.log("CORRECT DATA");
             con.send(JSON.stringify(new Message("CorrectData", msg.data.username)));
             usersLogged.set(con.id, msg.data.username);
           }
         });
+        if(!flag){
+          con.send(JSON.stringify(new Message("WrongCredentials")));
+        }
         break;
     }
   });

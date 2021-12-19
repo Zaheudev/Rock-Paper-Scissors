@@ -34,6 +34,13 @@ const Register = () => {
       );
       console.log("Signing in");
     }
+    if(username.trim().length < 3 && pass.trim().length > 6){
+      dispatch(authActions.setError("Username too short! over 3 chars"));
+    }else if(pass.trim().length < 6 && username.trim().length > 3){
+      dispatch(authActions.setError("Password too short! over 6 chars"));
+    }else {
+      dispatch(authActions.setError("Insert correct data"))
+    }
   };
 
   const clearError = () => {
@@ -42,6 +49,7 @@ const Register = () => {
 
   const Cancel = (event) => {
     dispatch(authActions.setIsRegisterPage(false));
+    dispatch(authActions.clear());
   };
   return (
     <main className={classes.auth}>
@@ -49,14 +57,14 @@ const Register = () => {
       <section>
         <form onSubmit={SignUp}>
           <div className={classes.control}>
-            <label htmlFor="name">Name</label>
-            <input onChange={clearError} type="text" id="name" />
-          </div>
+            <label htmlFor="name">Username</label>
+            <input placeholder="Username" onChange={clearError} type="text" id="name" />
+          </div> 
           <div className={classes.control}>
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" />
+            <input placeholder="Password" onChange={clearError} type="password" id="password" />
           </div>
-          <p>{error}</p>
+          <p className={classes.error}>{error}</p>
           <Button title="Register" type={"submit"} />
           <Button title="Cancel" action={Cancel} type={"button"} />
         </form>

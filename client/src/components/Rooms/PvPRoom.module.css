@@ -1,0 +1,20 @@
+.page {
+  margin: 3rem auto;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+  width: 25rem;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  background-color: #474e5c;
+}
+
+.buttons {
+  margin-bottom: 60px;
+}
+
+.room {
+  position: absolute;
+  bottom: 450px;
+  left: 65%;
+}

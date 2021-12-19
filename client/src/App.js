@@ -6,7 +6,7 @@ import HomePage from "./components/Home/HomePage";
 import BotRoom from "./components/Rooms/BotRoom";
 import { pageActions } from "./store/page.js";
 import { dataActions } from "./store/data.js";
-import { authActions } from "./store/auth.js";
+import auth, { authActions } from "./store/auth.js";
 import PvPRoom from "./components/Rooms/PvPRoom";
 import Authenticate from "./components/Authentication/Authenticate";
 
@@ -116,6 +116,9 @@ const App = () => {
       case "CorrectData":
         dispatch(authActions.login(msg.data));
         dispatch(pageActions.setHomePage());
+        break;
+      case "WrongCredentials":
+        dispatch(authActions.setError("Credentials wrong"));
         break;
     }
   };

@@ -27,3 +27,7 @@
   padding: 0.25rem;
   border: 1px solid #ccc;
 }
+
+.error {
+  color:  red;
+}

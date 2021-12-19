@@ -5,7 +5,7 @@ const initalAuthState = {
   isRegister: false,
   isLoging: false,
   error: null,
-  username: null,
+  username: localStorage.getItem('username'),
 };
 
 const authSlice = createSlice({
