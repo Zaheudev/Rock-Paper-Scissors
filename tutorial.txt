@@ -1,0 +1,28 @@
+#####
+TUTORIAL ON HOW TO USE THE APP
+#####
+
+STEPS ON HOW TO OPEN THE APP
+    1- First you have to open the server by opening your cmd on the path of /website folder or /website/server and type 'npm start'
+    eg "C:\Users\user\Desktop\client-2\website>" then type command "npm start" (btw without quotation marks)
+    you should see printed on console "Server started on port 3001" and maybe the database rows if there are any
+
+    2- Second you have to open the client by opening your cmd on the path of /website/client and type 'npm start'
+    eg "C:\Users\user\Desktop\client-2\website/client>" then type command "npm start" (btw without quotation marks)
+
+    3- Make sure the both client and server are opened and if you encounter errors make sure you are on the right path
+    (NOTE: if that doesen't work you don't have node.js installed on your machine);
+
+RULES
+    1- DO NOT ENTER SENSITIVE DATA ON REGISTER PAGE, all the data will be stored on storage.db and it's not secure at all now.
+    2- If you want to test the multiplayer feature you have to one more browser for the other client because if you logged in you 
+    remain logged in even if you refrsh or quit the tab (not storing any ips or anything like that, just a bool and a string with name
+    on localStorage from any browser) and that doese'nt make possible to play with bot clients from the same browser because it's the same account.
+
+ABOUT THE APP
+    1- The app is built in the way that every logic of the game is verified on server, so that means it cannot be sending any messages to 'hack' the app
+    if you change any data stored on the browser will only make effect on front-end not on the back-end because there is logic to check every message.
+    2- The multiplayer feature only works with random users for now.
+
+#####
+This is just a demo made in a week so don't take in serious the bugs if you encounter some. In the future versions will be fixed.

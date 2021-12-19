@@ -115,7 +115,6 @@ const BotRoom = (props) => {
       </div>
       <h2>{`YOU ARE ${name}`}</h2>
       <Button title="Exit" action={exitRoom} />
-
       <div className={classes.room}>
         <Room />
       </div>

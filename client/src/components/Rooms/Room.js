@@ -13,10 +13,10 @@ const Room = (props) => {
   let userResult = null;
 
   if (key === 2) {
-    userResult = `${name} WINS: ${user2Wins}`;
+    userResult = `YOUR WINS: ${user2Wins}`;
     enemyResult = `${enemyName} WINS: ${user1Wins}`;
   } else if (key === 1) {
-    userResult = `${name} WINS: ${user1Wins}`;
+    userResult = `YOUR WINS: ${user1Wins}`;
     enemyResult = `${enemyName} WINS: ${user2Wins}`;
   }
 

@@ -49,7 +49,7 @@ const Result = (props) => {
     <div>
       <p>{state !== "Waiting" ? `${props.enemyName} SYMBOL: ` : "WAITING FOR PLAYER"} {enemySymbolRender}</p>
       <p>{result}</p>
-      <p>{`${props.name} SYMBOL:`} {clientSymbol}</p>
+      <p>{`YOUR SYMBOL:`} {clientSymbol}</p>
       
     </div>
   );
