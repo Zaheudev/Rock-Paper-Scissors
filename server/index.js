@@ -6,6 +6,7 @@ const aiGame = require("./aiGame.js");
 const mpGame = require("./mpGame.js");
 const User = require("./User.js");
 const Message = require("./message.js");
+const sqlite3 = require('sqlite3').verbose();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,6 +17,7 @@ var websockets = new Map();
 var users = new Map();
 var aiGames = new Map();
 var mpGames = new Map();
+var usersLogged = new Map();
 var conId = 0;
 
 app.get("/api", indexRouter);
@@ -24,6 +26,21 @@ const wsServer = new WebSocketServer({
   httpServer: server,
   autoAcceptConnections: false,
 });
+
+var db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) =>{
+  if(err) {
+    console.error(err.message);
+  }
+  console.log("connected to db");
+});
+
+db.serialize(() => {
+  db.run('create table if not exists users(_id integer primary key, name text not null unique, password integer not null);');
+  db.each('select * from users', (err, row) =>{
+    console.log(row._id + "|" + row.name + "|" + row.password);
+  });
+});
+
 
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
@@ -54,7 +71,7 @@ wsServer.on("request", function (request) {
         let codeAI = generateCode(6);
         aiGames.set(
           codeAI,
-          new aiGame(new User("George", con.id, con, 1), codeAI)
+          new aiGame(new User(msg.data, con.id, con, 1), codeAI)
         );
         users.set(con.id, aiGames.get(codeAI).getUser());
         con.send(
@@ -70,7 +87,7 @@ wsServer.on("request", function (request) {
           for (const [id, game] of mpGames) {
             if (game.getUser2() === null && game.getState() === "Waiting") {
               gameFound = true;
-              game.setUser2(new User("Daniel", con.id, con, false, 2));
+              game.setUser2(new User(msg.data, con.id, con, false, 2));
               users.set(con.id, game.getUser2());
               game.setState("Starting Game");
               con.send(
@@ -98,7 +115,7 @@ wsServer.on("request", function (request) {
             let codeMP = generateCode(6);
             mpGames.set(
               codeMP,
-              new mpGame(new User("George", con.id, con, true, 1), null, codeMP)
+              new mpGame(new User(msg.data, con.id, con, true, 1), null, codeMP)
             );
             users.set(con.id, mpGames.get(codeMP).getUser1());
             con.send(
@@ -112,7 +129,7 @@ wsServer.on("request", function (request) {
           let codeMP = generateCode(6);
           mpGames.set(
             codeMP,
-            new mpGame(new User("George", con.id, con, true, 1), null, codeMP)
+            new mpGame(new User(msg.data, con.id, con, true, 1), null, codeMP)
           );
           users.set(con.id, mpGames.get(codeMP).getUser1());
           con.send(
@@ -260,8 +277,30 @@ wsServer.on("request", function (request) {
             }
         }
         mpGames.delete(msg.data.code);
+        break;
+      case "Register":
+        db.run('INSERT INTO users(name, password) VALUES(?, ?)', [msg.data.username, msg.data.password], (err) => {
+          if(err) {
+            con.send(JSON.stringify(new Message("RegisterFail")));
+            return;
+          }
+          console.log(`User ${msg.data.username} was added to database`);
+          con.send(JSON.stringify(new Message("RegisterValidated")));
+        });
+        break;
+      case "LoginIn":
+        db.each('select * from users', (err, row) =>{
+          console.log(row);
+          if(row.name === msg.data.username && row.password.toString() === msg.data.password){
+            console.log("CORRECT DATA");
+            con.send(JSON.stringify(new Message("CorrectData", msg.data.username)));
+            usersLogged.set(con.id, msg.data.username);
+          }
+        });
+        break;
     }
   });
+
   con.on("close", function (reasonCode, description) {
     console.log(`Connection ${con.id} left`);
     for(const[key, game] of mpGames) {

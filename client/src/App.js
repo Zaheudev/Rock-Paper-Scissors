@@ -7,8 +7,6 @@ import BotRoom from "./components/Rooms/BotRoom";
 import { pageActions } from "./store/page.js";
 import { dataActions } from "./store/data.js";
 import { authActions } from "./store/auth.js";
-import Login from "./components/Authentication/Login";
-import Register from "./components/Authentication/Register";
 import PvPRoom from "./components/Rooms/PvPRoom";
 import Authenticate from "./components/Authentication/Authenticate";
 
@@ -36,10 +34,11 @@ export function Message(type, data) {
 const App = () => {
   const isPlayingBot = useSelector((state) => state.page.isPlayingAI);
   const isPlayingMP = useSelector((state) => state.page.isPlayingMP);
+  const homePage = useSelector((state) => state.page.homePage);
   const IsAuthenticated = useSelector((state) => state.auth.IsAuthenticated);
   const key = useSelector((state) => state.data.userKey);
+  const username = useSelector((state) => state.auth.username);
   const [roundWinner, setRoundWinner] = useState(null);
-
   const dispatch = useDispatch();
 
   client.onmessage = function (message) {
@@ -108,15 +107,27 @@ const App = () => {
       case "GameLost":
         dispatch(dataActions.setWinner(msg.data.user));
         break;
+      case "RegisterFail":
+        dispatch(authActions.setError("Username already in use"));
+        break;
+      case "RegisterValidated":
+        dispatch(authActions.setIsRegisterPage(false));
+        break;
+      case "CorrectData":
+        dispatch(authActions.login(msg.data));
+        dispatch(pageActions.setHomePage());
+        break;
     }
   };
 
+  console.log(username);
+
   const sendBotMsj = () => {
-    client.send(JSON.stringify(new Message("playAI")));
+    client.send(JSON.stringify(new Message("playAI", localStorage.getItem('username'))));
   };
 
   const sendMultiplayerMsj = () => {
-    client.send(JSON.stringify(new Message("playMP")));
+    client.send(JSON.stringify(new Message("playMP", localStorage.getItem('username'))));
   };
 
   const changeScreenBot = () => {
@@ -127,16 +138,31 @@ const App = () => {
     dispatch(pageActions.joinMP());
   };
 
-  let flag = (
-    <HomePage sendMpData={sendMultiplayerMsj} sendBotData={sendBotMsj} />
-  );
+  const logOut = () => {
+    dispatch(authActions.logout());
+    dispatch(pageActions.exitHomePage());
+  };
+
+  let flag = <Authenticate />;
+
+  if (localStorage.getItem("auth") === "true") {
+    dispatch(pageActions.setHomePage());
+  }
 
   if (isPlayingBot) {
     flag = <BotRoom />;
   } else if (isPlayingMP) {
     flag = <PvPRoom result={roundWinner} />;
-  }else if(!IsAuthenticated){
-    flag = <Authenticate />
+  } else if (homePage) {
+    flag = (
+      <HomePage
+        logOut={logOut}
+        sendMpData={sendMultiplayerMsj}
+        sendBotData={sendBotMsj}
+      />
+    );
+  } else if (!IsAuthenticated && localStorage.getItem("auth") === "false") {
+    flag = <Authenticate />;
   }
 
   const insertData = (name, code, enemyName, key, state, turn) => {
@@ -152,3 +178,5 @@ const App = () => {
 };
 
 export default App;
+
+// I KNOW THE CODE IS A BITT MESSY BUT I LL FIX IN FUTURE VERSION (NOT ENOUGH TIME FOR CLEANUP CODE AND STUFF LIKE THAT) I FOCUSED ONLY ON MAKE IT WORK FOR DEMO

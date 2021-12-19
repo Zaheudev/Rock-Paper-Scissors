@@ -69,7 +69,7 @@ const BotRoom = (props) => {
   return (
     <React.Fragment>
       <div>
-        <Result name={name} enemyName={enemyName} client={symbol} botSymbol={enemySymbol} winner={roundWinner} />
+        <Result name={name} enemyName={enemyName} client={symbol} enemySymbol={enemySymbol} winner={roundWinner} />
         <div>
           <Button state={button} title="Rock" action={selectSymbol} />
           <Button state={button} title="Paper" action={selectSymbol} />

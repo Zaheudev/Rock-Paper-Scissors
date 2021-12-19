@@ -1,9 +1,61 @@
 import React from "react";
+import Button from "../UI/Button";
+
+import classes from "./Auth.module.css";
+
+import { useDispatch } from "react-redux";
+
+import { authActions } from "../../store/auth";
+import { client } from "../../App";
+
+function Message(type, data) {
+  this.type = type;
+  this.data = data;
+}
 
 const Login = () => {
-  return <form>
-      <label>LOGIN FORM</label>
-  </form>;
+  const dispatch = useDispatch();
+
+  const SignIn = (event) => {
+    let username = event.target.elements.name.value;
+    let pass = event.target.elements.password.value;
+    event.preventDefault();
+    if (username.trim().length > 3 && pass.trim().length >= 6) {
+      client.send(
+        JSON.stringify(
+          new Message("LoginIn", {
+            username: username,
+            password: pass,
+          })
+        )
+      );
+      console.log("Signing in");
+    }
+  };
+
+  const Cancel = () => {
+    dispatch(authActions.setIsLogingPage(false));
+  };
+
+  return (
+    <main className={classes.auth}>
+      <h1>LOGIN PAGE</h1>
+      <section>
+        <form onSubmit={SignIn}>
+          <div className={classes.control}>
+            <label htmlFor="name">Name</label>
+            <input type="text" id="name" />
+          </div>
+          <div className={classes.control}>
+            <label htmlFor="password">Password</label>
+            <input type="password" id="password" />
+          </div>
+          <Button title="Log In" type={"submit"} />
+          <Button title="Cancel" action={Cancel} type={"button"} />
+        </form>
+      </section>
+    </main>
+  );
 };
 
 export default Login;

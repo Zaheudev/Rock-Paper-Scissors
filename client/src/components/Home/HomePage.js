@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import Button from "../UI/Button";
 
 const HomePage = (props) => {
   const [data, setData] = useState(null);
@@ -11,8 +12,9 @@ const HomePage = (props) => {
 
   return (
     <Fragment>
-      <button onClick={props.sendBotData}>Play Now!</button>
-      <button onClick={props.sendMpData}>Join Room!</button>
+      <Button title={"Play Now!"} action={props.sendBotData} />
+      <Button title={"Join Room!"} action={props.sendMpData} />
+      <Button title={"Log Out"} action={props.logOut} />
       <p>{!data ? "Loading..." : data}</p>
     </Fragment>
   );

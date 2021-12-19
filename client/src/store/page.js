@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initalState = { isPlayingAI: false, isPlayingMP: false };
+const initalState = { isPlayingAI: false, isPlayingMP: false, homePage: false };
 
 const pageSlice = createSlice({
   name: "room",
@@ -20,6 +20,14 @@ const pageSlice = createSlice({
 
     exitMP(state) {
       state.isPlayingMP = false;
+    },
+
+    setHomePage(state){
+      state.homePage = true;
+    },
+
+    exitHomePage(state){
+      state.homePage = false;
     },
   },
 });
