@@ -20,8 +20,8 @@ const Register = () => {
 
   const SignUp = (event) => {
     event.preventDefault();
-    let username = event.target.elements.name.value;
-    let pass = event.target.elements.password.value;
+    let username = event.target.elements.name.value.trim();
+    let pass = event.target.elements.password.value.trim();
     event.preventDefault();
     if (username.trim().length > 3 && pass.trim().length >= 6) {
       client.send(

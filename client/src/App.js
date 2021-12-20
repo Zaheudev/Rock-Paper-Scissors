@@ -43,7 +43,6 @@ const App = () => {
 
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
-    console.log(msg);
     switch (msg.type) {
       case "playWithBotConfirm":
         insertData(msg.data.user.name, msg.data.id, msg.data.bot.name, 1);
@@ -122,8 +121,6 @@ const App = () => {
         break;
     }
   };
-
-  console.log(username);
 
   const sendBotMsj = () => {
     client.send(JSON.stringify(new Message("playAI", localStorage.getItem('username'))));

@@ -19,8 +19,8 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const SignIn = (event) => {
-    let username = event.target.elements.name.value;
-    let pass = event.target.elements.password.value;
+    let username = event.target.elements.name.value.trim();
+    let pass = event.target.elements.password.value.trim();
     event.preventDefault();
     if (username.trim().length > 3 && pass.trim().length >= 6) {
       client.send(
@@ -61,7 +61,7 @@ const Login = () => {
             <input placeholder="Password" type="password" id="password" />
           </div>
           <p className={classes.error}>{error}</p>
-          <Button title="Log In" type={"submit"} />
+          <Button title="Login" type={"submit"} />
           <Button title="Cancel" action={Cancel} type={"button"} />
         </form>
       </section>

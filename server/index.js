@@ -279,7 +279,7 @@ wsServer.on("request", function (request) {
         mpGames.delete(msg.data.code);
         break;
       case "Register":
-        db.run('INSERT INTO users(name, password) VALUES(?, ?)', [msg.data.username, msg.data.password], (err) => {
+        db.run('INSERT INTO users(name, password) VALUES(?, ?)', [msg.data.username, msg.data.password.toLowerCase()], (err) => {
           if(err) {
             con.send(JSON.stringify(new Message("RegisterFail")));
             return;

@@ -26,7 +26,7 @@ const Authenticate = () => {
 
   let flag = (
     <div className={classes.card}>
-      <Button title={"Login In"} action={LogIn} />
+      <Button title={"Login"} action={LogIn} />
       <Button title={"Register"} action={SignUp} />
     </div>
   );
