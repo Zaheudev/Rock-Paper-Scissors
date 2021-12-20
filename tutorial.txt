@@ -12,6 +12,7 @@ STEPS ON HOW TO OPEN THE APP
 
     3- Make sure the both client and server are opened and if you encounter errors make sure you are on the right path
     (NOTE: if that doesen't work you don't have node.js installed on your machine);
+    4- Then if both servers are open open your browser and type "localhost:3000"
 
 RULES
     1- DO NOT ENTER SENSITIVE DATA ON REGISTER PAGE, all the data will be stored on storage.db and it's not secure at all now.
@@ -26,3 +27,4 @@ ABOUT THE APP
 
 #####
 This is just a demo made in a week so don't take in serious the bugs if you encounter some. In the future versions will be fixed.
+and ignore all the warnings!!
