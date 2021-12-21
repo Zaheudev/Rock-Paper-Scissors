@@ -68,7 +68,7 @@ wsServer.on("request", function (request) {
     console.log(msg);
     switch (msg.type) {
       case "playAI":
-        let codeAI = generateCode(6);
+        let codeAI = generateCode(4);
         aiGames.set(
           codeAI,
           new aiGame(new User(msg.data, con.id, con, 1), codeAI)
@@ -116,7 +116,7 @@ wsServer.on("request", function (request) {
           if (!gameFound) {
             console.log("No free game, creating new game");
 
-            let codeMP = generateCode(6);
+            let codeMP = generateCode(4);
             mpGames.set(
               codeMP,
               new mpGame(new User(msg.data, con.id, con, true, 1), null, codeMP)
@@ -130,7 +130,7 @@ wsServer.on("request", function (request) {
             );
           }
         } else {
-          let codeMP = generateCode(6);
+          let codeMP = generateCode(4);
           mpGames.set(
             codeMP,
             new mpGame(new User(msg.data, con.id, con, true, 1), null, codeMP)
@@ -142,6 +142,7 @@ wsServer.on("request", function (request) {
               getCircularReplacer()
             )
           );
+          console.log(codeMP);
         }
         break;
       case "ClientSymbolMP":
@@ -311,6 +312,33 @@ wsServer.on("request", function (request) {
           con.send(JSON.stringify(new Message("WrongCredentials")));
         }
         break;
+      case "JoinWithCode":
+        let gm = mpGames.get(msg.data.code);
+        if(gm){
+          if(gm.getUser2() != null){
+            break;
+          }
+          gm.setUser2(new User(msg.data.name, con.id, con, false, 2));
+          users.set(con.id, gm.getUser2());
+          gm.setState("Starting Game");
+          con.send(
+            JSON.stringify(
+              new Message("joinRoom", gm),
+              getCircularReplacer()
+            )
+          );
+          gm
+            .getUser1()
+            .getWs()
+            .send(
+              JSON.stringify(
+                new Message("enemyJoin", gm),
+                getCircularReplacer()
+              )
+            );
+          break;
+        }
+        break;
     }
   });
 
@@ -370,7 +398,7 @@ function generateSymbol() {
 function generateCode(length) {
   var result = "";
   var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789";
+    "01234567890123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));

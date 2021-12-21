@@ -138,6 +138,7 @@ const PvPRoom = (props) => {
           </h2>
         )}
         <h2>{`YOU ARE ${name}`}</h2>
+        <h3>{`CODE: ${code}`}</h3>
         <Button title="Exit" action={exitRoom} />
         <div className={classes.room}>
           <Room />

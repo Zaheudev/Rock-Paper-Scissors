@@ -6,8 +6,9 @@ import { authActions } from "../../store/auth";
 import classes from "./HomePage.module.css";
 
 import image from "../../assets/logo1.png";
-import image2 from '../../assets/logo2.png';
-
+import image2 from "../../assets/logo2.png";
+import Modal from "../UI/Modal";
+import CodeForm from "./CodeForm";
 
 const HomePage = (props) => {
   const [data, setData] = useState(null);
@@ -24,12 +25,16 @@ const HomePage = (props) => {
       <header>
         <div>
           <img draggable="false" src={image}></img>
+          <Modal />
+
           {/* <h1>HOME PAGE</h1> */}
         </div>
       </header>
       <div className={classes.page}>
-        <Button title={"Play Now!"} action={props.sendBotData} />
-        <Button title={"Join Room!"} action={props.sendMpData} />
+        <Button title={"Play vs AI!"} action={props.sendBotData} />
+        <Button title={"Play vs Stranger!"} action={props.sendMpData} />
+        <Button title={"Join With Code!"} type={"submit"} action={null} form={"codeForm"}/>
+        <CodeForm name={username}/>
         <Button title={"Log Out"} action={props.logOut} />
       </div>
       <footer>
