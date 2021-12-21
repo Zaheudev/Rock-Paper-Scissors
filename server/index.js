@@ -86,27 +86,31 @@ wsServer.on("request", function (request) {
           let gameFound = false;
           for (const [id, game] of mpGames) {
             if (game.getUser2() === null && game.getState() === "Waiting") {
-              gameFound = true;
-              game.setUser2(new User(msg.data, con.id, con, false, 2));
-              users.set(con.id, game.getUser2());
-              game.setState("Starting Game");
-              con.send(
-                JSON.stringify(
-                  new Message("joinRoom", game),
-                  getCircularReplacer()
-                )
-              );
-              game
-                .getUser1()
-                .getWs()
-                .send(
-                  JSON.stringify(
-                    new Message("enemyJoin", game),
-                    getCircularReplacer()
-                  )
-                );
-              console.log("Game found, joining room " + id);
-              break;
+                if(game.getUser1().getName() !== msg.data){
+                  gameFound = true;
+                  game.setUser2(new User(msg.data, con.id, con, false, 2));
+                  users.set(con.id, game.getUser2());
+                  game.setState("Starting Game");
+                  con.send(
+                    JSON.stringify(
+                      new Message("joinRoom", game),
+                      getCircularReplacer()
+                    )
+                  );
+                  game
+                    .getUser1()
+                    .getWs()
+                    .send(
+                      JSON.stringify(
+                        new Message("enemyJoin", game),
+                        getCircularReplacer()
+                      )
+                    );
+                  console.log("Game found, joining room " + id);
+                  break;
+              }else {
+                console.log("Same client!");
+              }
             }
           }
           if (!gameFound) {
@@ -156,7 +160,7 @@ wsServer.on("request", function (request) {
                   );
                   for (const [id, user] of users) {
                     if (user.getSymbol() === null) {
-                      if (user.getName() != tempName) {
+                      if (user.getName() !== tempName) {
                         user.setHisTurn(true);
                         user.getWs().send(JSON.stringify(new Message("enemyTurned", user),getCircularReplacer()));
                         console.log(
@@ -164,56 +168,60 @@ wsServer.on("request", function (request) {
                         );
                       }
                     } else {
-                      if (user.getName() != tempName) {
+                      if (user.getName() !== tempName) {
                         let user1 = tempGame.getUser1();
                         let user2 = tempGame.getUser2();
-                        if(
-                          tempGame.getRounds() > 0 &&
-                          user1.getWinCounter() < 2 &&
-                          tempGame.getRounds() > 0 &&
-                          user2.getWinCounter() < 2
-                        ){
-                          console.log("END ROUND");
-                          let roundResult = gameLogic(user1.getSymbol(), user2.getSymbol());
-                          tempGame.newRound();
-                          user.setHisTurn(true);
-                          user1.getWs().send(JSON.stringify(new Message("RoundEnded", {game: tempGame, result: roundResult}),getCircularReplacer()));
-                          user2.getWs().send(JSON.stringify(new Message("RoundEnded", {game: tempGame, result: roundResult}),getCircularReplacer()));
-                          user.getWs().send(JSON.stringify(new Message("enemyTurned", user),getCircularReplacer()));
-                          user1.setSymbol(null);
-                          user2.setSymbol(null);
+                        if(user1 && user2){
+                          if(
+                            tempGame.getRounds() > 0 &&
+                            user1.getWinCounter() < 2 &&
+                            tempGame.getRounds() > 0 &&
+                            user2.getWinCounter() < 2
+                          ){
+                            console.log("END ROUND");
+                            let roundResult = gameLogic(user1.getSymbol(), user2.getSymbol());
+                            user.setHisTurn(true);
+                            user1.getWs().send(JSON.stringify(new Message("RoundEnded", {game: tempGame, result: roundResult}),getCircularReplacer()));
+                            user2.getWs().send(JSON.stringify(new Message("RoundEnded", {game: tempGame, result: roundResult}),getCircularReplacer()));
+                            user.getWs().send(JSON.stringify(new Message("enemyTurned", user),getCircularReplacer()));
+                            user1.setSymbol(null);
+                            user2.setSymbol(null);
 
-                          if(roundResult === 1){
-                            user1.getWs().send(JSON.stringify(new Message("Round Won")));
-                            user2.getWs().send(JSON.stringify(new Message("Round Lost")));
-                            user1.winner();
-                          }else if(roundResult === 2){
-                            user2.getWs().send(JSON.stringify(new Message("Round Won")));
-                            user1.getWs().send(JSON.stringify(new Message("Round Lost")));
-                            user2.winner();
-                          }
+                            if(roundResult === 1){
+                              user1.getWs().send(JSON.stringify(new Message("Round Won")));
+                              user2.getWs().send(JSON.stringify(new Message("Round Lost")));
+                              tempGame.newRound();
 
-                          if(user1.getWinCounter() === 2){
-                            user1.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 1}), getCircularReplacer()));
-                            user2.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 1}), getCircularReplacer()));
-                            console.log(mpGames.delete(msg.data.code));
-                          }else if(user2.getWinCounter() === 2){
-                            user2.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 2}), getCircularReplacer()));
-                            user1.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 2}), getCircularReplacer()));
-                            console.log(mpGames.delete(msg.data.code));
-                          }
-                        }                        
-                      }
+                              user1.winner();
+                            }else if(roundResult === 2){
+                              user2.getWs().send(JSON.stringify(new Message("Round Won")));
+                              user1.getWs().send(JSON.stringify(new Message("Round Lost")));
+                              tempGame.newRound();
+                              user2.winner();
+                            }
+
+                            if(user1.getWinCounter() === 2){
+                              user1.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 1}), getCircularReplacer()));
+                              user2.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 1}), getCircularReplacer()));
+                              console.log(mpGames.delete(msg.data.code));
+                            }else if(user2.getWinCounter() === 2){
+                              user2.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 2}), getCircularReplacer()));
+                              user1.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 2}), getCircularReplacer()));
+                              console.log(mpGames.delete(msg.data.code));
+                            }
+                          }                        
+                        }
+                      }  
                     }
                   }
                   user
-                    .getWs()
-                    .send(
-                      JSON.stringify(
-                        new Message("You Turned", user),
-                        getCircularReplacer()
-                      )
-                    );
+                  .getWs()
+                  .send(
+                    JSON.stringify(
+                      new Message("You Turned", user),
+                      getCircularReplacer()
+                    )
+                  );
                 }
               } else {
                 console.log("HACKER");

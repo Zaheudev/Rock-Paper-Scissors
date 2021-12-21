@@ -55,9 +55,7 @@ const dataSlice = createSlice({
     },
 
     newRound(state) {
-      if (state.rounds < 3) {
-        state.rounds++;
-      }
+      state.rounds++;
     },
 
     setWinner(state, action) {

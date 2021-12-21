@@ -43,6 +43,7 @@ const App = () => {
 
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
+    console.log(msg);
     switch (msg.type) {
       case "playWithBotConfirm":
         insertData(msg.data.user.name, msg.data.id, msg.data.bot.name, 1);
@@ -87,7 +88,6 @@ const App = () => {
         dispatch(dataActions.setTurn(true));
         break;
       case "RoundEnded":
-        dispatch(dataActions.newRound());
         if (key === 2) {
           dispatch(dataActions.setEnemySymbol(msg.data.game.user1.symbol));
         } else if (key === 1) {
@@ -95,10 +95,15 @@ const App = () => {
         }
         if (msg.data.result === 1) {
           dispatch(dataActions.winUser1());
+          dispatch(dataActions.newRound());
           setRoundWinner(msg.data.result);
         } else if (msg.data.result === 2) {
           dispatch(dataActions.winUser2());
+          dispatch(dataActions.newRound());
           setRoundWinner(msg.data.result);
+        } else {
+          setRoundWinner(msg.data.result);
+          dispatch(dataActions.newRound());
         }
       case "GameWon":
         dispatch(dataActions.setWinner(msg.data.user));
@@ -123,11 +128,15 @@ const App = () => {
   };
 
   const sendBotMsj = () => {
-    client.send(JSON.stringify(new Message("playAI", localStorage.getItem('username'))));
+    client.send(
+      JSON.stringify(new Message("playAI", localStorage.getItem("username")))
+    );
   };
 
   const sendMultiplayerMsj = () => {
-    client.send(JSON.stringify(new Message("playMP", localStorage.getItem('username'))));
+    client.send(
+      JSON.stringify(new Message("playMP", localStorage.getItem("username")))
+    );
   };
 
   const changeScreenBot = () => {

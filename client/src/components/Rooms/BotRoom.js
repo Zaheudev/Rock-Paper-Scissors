@@ -109,9 +109,9 @@ const BotRoom = (props) => {
         {button && <h1>{`${winner ? name : enemyName} WON`}</h1>}
       </div>
       <div className={classes.buttons}>
-        <ButtonImage symbol={rock} action={selectRock} />
-        <ButtonImage symbol={paper} action={selectPaper} />
-        <ButtonImage symbol={scissors} action={selectScissors} />
+        <ButtonImage state={winner} symbol={rock} action={selectRock} />
+        <ButtonImage state={winner} symbol={paper} action={selectPaper} />
+        <ButtonImage state={winner} symbol={scissors} action={selectScissors} />
       </div>
       <h2>{`YOU ARE ${name}`}</h2>
       <Button title="Exit" action={exitRoom} />

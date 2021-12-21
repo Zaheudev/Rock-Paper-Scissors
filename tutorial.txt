@@ -27,4 +27,4 @@ ABOUT THE APP
 
 #####
 This is just a demo made in a week so don't take in serious the bugs if you encounter some. In the future versions will be fixed.
-and ignore all the warnings!!
+and ignore all the warnings!!   

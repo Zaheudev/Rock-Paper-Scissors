@@ -104,6 +104,14 @@ const PvPRoom = (props) => {
     winner = enemyName;
   }
 
+  let disable = false;
+
+  if(state === "Waiting"){
+    disable = true;
+  }else if(stateRender === "Enemy Turn" || winner){
+    disable = true;
+  }
+
   return (
     <React.Fragment>
       <h3>{`ROUND ${rounds}`}</h3>
@@ -120,9 +128,9 @@ const PvPRoom = (props) => {
 
         {winner && <h1>{`${winner} WON`}</h1>}
         <div className={classes.buttons}>
-          <ButtonImage symbol={rock} action={selectRock} />
-          <ButtonImage symbol={paper} action={selectPaper} />
-          <ButtonImage symbol={scissors} action={selectScissors} />
+          <ButtonImage state={disable} symbol={rock} action={selectRock} />
+          <ButtonImage state={disable} symbol={paper} action={selectPaper} />
+          <ButtonImage state={disable} symbol={scissors} action={selectScissors} />
         </div>
         {!winner && (
           <h2>
