@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "../UI/Button";
 import classes from "./HomePage.module.css";
@@ -6,9 +6,27 @@ import classes from "./HomePage.module.css";
 import image from "../../assets/logo1.png";
 import Modal from "../UI/Modal";
 import CodeForm from "./CodeForm";
+import { client, Message } from "../../App";
 
 const HomePage = (props) => {
   const username = useSelector((state) => state.auth.username);
+  const [showForm, setShowForm] = useState(false);
+
+  const showFormButton = () => {
+    if (showForm) {
+      let form = document.getElementById('codeForm');
+      let code = form.elements.code.value.trim();
+      if (code.length === 4) {
+        client.send(
+          JSON.stringify(
+            new Message("JoinWithCode", { code: code, name: username })
+          )
+        );
+      }
+      form.elements.code.value = "";
+    }
+    setShowForm(!showForm);
+  };
 
   return (
     <div>
@@ -21,8 +39,11 @@ const HomePage = (props) => {
       <div className={classes.page}>
         <Button title={"Play vs AI!"} action={props.sendBotData} />
         <Button title={"Play vs Stranger!"} action={props.sendMpData} />
-        <Button title={"Join With Code!"} type={"submit"} action={null} form={"codeForm"}/>
-        <CodeForm name={username}/>
+        <Button
+          title={"Join With Code!"}
+          action={showFormButton}
+        />
+        {showForm && <CodeForm name={username} />}
         <Button title={"Log Out"} action={props.logOut} />
       </div>
       <footer>
