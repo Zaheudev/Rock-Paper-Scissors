@@ -6,7 +6,7 @@ import HomePage from "./components/Home/HomePage";
 import BotRoom from "./components/Rooms/BotRoom";
 import { pageActions } from "./store/page.js";
 import { dataActions } from "./store/data.js";
-import auth, { authActions } from "./store/auth.js";
+import { authActions } from "./store/auth.js";
 import PvPRoom from "./components/Rooms/PvPRoom";
 import Authenticate from "./components/Authentication/Authenticate";
 
@@ -37,7 +37,6 @@ const App = () => {
   const homePage = useSelector((state) => state.page.homePage);
   const IsAuthenticated = useSelector((state) => state.auth.IsAuthenticated);
   const key = useSelector((state) => state.data.userKey);
-  const username = useSelector((state) => state.auth.username);
   const [roundWinner, setRoundWinner] = useState(null);
   const dispatch = useDispatch();
 
@@ -45,6 +44,8 @@ const App = () => {
     let msg = JSON.parse(message.data);
     console.log(msg);
     switch (msg.type) {
+      default:
+        break;
       case "playWithBotConfirm":
         insertData(msg.data.user.name, msg.data.id, msg.data.bot.name, 1);
         changeScreenBot();
@@ -105,6 +106,7 @@ const App = () => {
           setRoundWinner(msg.data.result);
           dispatch(dataActions.newRound());
         }
+        break;
       case "GameWon":
         dispatch(dataActions.setWinner(msg.data.user));
         break;

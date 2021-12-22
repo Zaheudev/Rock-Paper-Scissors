@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import auth, { authActions } from "../../store/auth";
+import { authActions } from "../../store/auth";
 import Login from "./Login";
 import Register from "./Register";
 
@@ -40,7 +40,7 @@ const Authenticate = () => {
   return (
     <div>
       <header>
-      <img draggable="false" src={image}></img>
+      <img alt="logo" draggable="false" src={image}></img>
       </header>
       <div>{flag}</div>
     </div>

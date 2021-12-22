@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { client } from "../../App";
 import Result from "./Result";
-import data, { dataActions } from "../../store/data";
+import { dataActions } from "../../store/data";
 import { pageActions } from "../../store/page.js";
 import Button from "../UI/Button";
 import Room from "./Room";
@@ -15,7 +15,7 @@ import ButtonImage from "../UI/ButtonImage";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
-  const [roundWinner, setRoundWinner] = useState(null);
+  const [roundWinner] = useState(null);
   const [button, setButton] = useState(false);
   const name = useSelector((state) => state.data.name);
   const enemySymbol = useSelector((state) => state.data.enemySymbol);
@@ -35,6 +35,8 @@ const BotRoom = (props) => {
     let msg = JSON.parse(message.data);
     console.log(msg);
     switch (msg.type) {
+      default:
+        break;
       case "result":
         console.log(msg.data);
         if (msg.data.result === 1) {

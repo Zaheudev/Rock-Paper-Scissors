@@ -5,7 +5,7 @@ import classes from "./Auth.module.css";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import auth, { authActions } from "../../store/auth";
+import { authActions } from "../../store/auth";
 import { client } from "../../App";
 
 function Message(type, data) {

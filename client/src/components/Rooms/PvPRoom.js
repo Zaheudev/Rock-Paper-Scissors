@@ -81,15 +81,10 @@ const PvPRoom = (props) => {
     dispatch(pageActions.exitMP());
   };
 
-  let flag = true;
   let stateRender = "Your Turn";
 
   if (!turn) {
     stateRender = "Enemy Turn";
-  }
-
-  if (state != "Waiting" && turn != false) {
-    flag = false;
   }
 
   let winner = null;

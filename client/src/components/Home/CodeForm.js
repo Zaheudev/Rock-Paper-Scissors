@@ -8,6 +8,7 @@ const CodeForm = (props) => {
     if (code.length === 4) {
       client.send(JSON.stringify(new Message("JoinWithCode", {code: code, name: props.name})));
     }
+    e.target.elements.code.value = '';
   };
 
   return (

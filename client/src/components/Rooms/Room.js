@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 const Room = (props) => {
   const user2Wins = useSelector((state) => state.data.user2Count);
   const user1Wins = useSelector((state) => state.data.user1Count);
-  const name = useSelector((state) => state.data.name);
   const enemyName = useSelector((state) => state.data.enemyName);
   const state = useSelector((state) => state.data.state);
   const key = useSelector((state) => state.data.userKey);

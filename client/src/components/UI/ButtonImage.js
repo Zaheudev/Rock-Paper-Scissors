@@ -10,7 +10,7 @@ const ButtonImage = (props) => {
       onClick={props.action}
       type={props.type}
     >
-      <img src={props.symbol} width="50" height="50"/>
+      <img alt={props.alt} src={props.symbol} width="50" height="50"/>
     </button>
   );
 };

@@ -37,7 +37,7 @@ var db = new sqlite3.Database('./storage.db', sqlite3.OPEN_READWRITE | sqlite3.O
 db.serialize(() => {
   db.run('create table if not exists users(_id integer primary key, name text not null unique, password integer not null);');
   db.each('select * from users', (err, row) =>{
-    console.log(row._id + "|" + row.name + "|" + row.password);
+    console.log(row._id + "|" + row.name + "|" + row.password + "|" + row.counter);
   });
 });
 
@@ -204,10 +204,12 @@ wsServer.on("request", function (request) {
                             if(user1.getWinCounter() === 2){
                               user1.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 1}), getCircularReplacer()));
                               user2.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 1}), getCircularReplacer()));
+                              increaseWin(user1.getName());
                               console.log(mpGames.delete(msg.data.code));
                             }else if(user2.getWinCounter() === 2){
                               user2.getWs().send(JSON.stringify(new Message("GameWon", {game: tempGame, user: 2}), getCircularReplacer()));
                               user1.getWs().send(JSON.stringify(new Message("GameLost", {game: tempGame, user: 2}), getCircularReplacer()));
+                              increaseWin(user2.getName());
                               console.log(mpGames.delete(msg.data.code));
                             }
                           }                        
@@ -288,7 +290,7 @@ wsServer.on("request", function (request) {
         mpGames.delete(msg.data.code);
         break;
       case "Register":
-        db.run('INSERT INTO users(name, password) VALUES(?, ?)', [msg.data.username, msg.data.password.toLowerCase()], (err) => {
+        db.run('INSERT INTO users(name, password, counter) VALUES(?, ?, ?)', [msg.data.username, msg.data.password, 0], (err) => {
           if(err) {
             con.send(JSON.stringify(new Message("RegisterFail")));
             return;
@@ -404,6 +406,10 @@ function generateCode(length) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+function increaseWin(user){
+  db.run(`update users set counter=counter+1 where name="${user}";`);
 }
 
 function getCircularReplacer() {
