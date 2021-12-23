@@ -15,15 +15,15 @@ img {
 }
 
 header {
-  position:relative;
-  margin:0 auto;
-  clear:left;
-  height:auto;
+  position: relative;
+  margin: 0 auto;
+  clear: left;
+  height: auto;
   z-index: 0;
-  text-align:center;
+  text-align: center;
 }
 
-.image1{
+.image1 {
   position: absolute;
 }
 
@@ -33,12 +33,21 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
+  border: 5px solid #b66e2a;
+  border-radius: 20px;
+  background-color: #2e1e00;
+  color: #b66e2a;
+  width: 90px;
+}
+
+input::placeholder {
+  color: #b66e2a8f;
 }
 
 .App {
-  background-image: url('../../assets/background2.png');
+  background-image: url("../../assets/background2.png");
   background-repeat: no-repeat;
-  background-size: 100% 100%; 
+  background-size: 100% 100%;
 }
