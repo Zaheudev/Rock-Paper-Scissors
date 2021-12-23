@@ -8,10 +8,16 @@ import Button from "../UI/Button";
 import Room from "./Room";
 import classes from "./BotRoom.module.css";
 
-import rock from "../../assets/rock.png";
-import paper from "../../assets/paper.png";
-import scissors from "../../assets/scissors.png";
-import ButtonImage from "../UI/ButtonImage";
+import purpleClass from "./Room.module.css";
+
+import rock from "../../assets/rock1.png";
+import paper from "../../assets/paper1.png";
+import scissors from "../../assets/scissors1.png";
+import ButtonsContainer from "../UI/ButtonsContainer";
+
+import enemyRock from "../../assets/rock2.png";
+import enemyPaper from "../../assets/paper2.png";
+import enemyScissors from "../../assets/scissors2.png";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
@@ -21,7 +27,6 @@ const BotRoom = (props) => {
   const enemySymbol = useSelector((state) => state.data.enemySymbol);
   const enemyName = useSelector((state) => state.data.enemyName);
   const code = useSelector((state) => state.data.code);
-  const rounds = useSelector((state) => state.data.rounds);
   const winner = useSelector((state) => state.data.winner);
 
   const dispatch = useDispatch();
@@ -97,9 +102,25 @@ const BotRoom = (props) => {
     dispatch(pageActions.exitBot());
   };
 
+  let classFlag = null;
+
+  if (!winner) {
+    classFlag = purpleClass.purple;
+  }
+
   return (
     <React.Fragment>
-      <h3>{`ROUND ${rounds}`}</h3>
+      <h2 className={purpleClass.purple}>{enemyName}</h2>
+      <ButtonsContainer
+        color={"purple"}
+        state={true}
+        symbolScissors={enemyScissors}
+        symbolPaper={enemyPaper}
+        symbolRock={enemyRock}
+        actionRock={null}
+        actionPaper={null}
+        actionScissors={null}
+      />
       <div className={classes.page}>
         <Result
           name={name}
@@ -108,12 +129,21 @@ const BotRoom = (props) => {
           enemySymbol={enemySymbol}
           winner={roundWinner}
         />
-        {button && <h1>{`${winner ? name : enemyName} WON`}</h1>}
+        {button && (
+          <h1 className={classFlag}>{`${winner ? name : enemyName} WON`}</h1>
+        )}
       </div>
+
       <div className={classes.buttons}>
-        <ButtonImage state={winner} symbol={rock} action={selectRock} />
-        <ButtonImage state={winner} symbol={paper} action={selectPaper} />
-        <ButtonImage state={winner} symbol={scissors} action={selectScissors} />
+        <ButtonsContainer
+          state={winner ? true : false}
+          symbolScissors={scissors}
+          symbolPaper={paper}
+          symbolRock={rock}
+          actionRock={selectRock}
+          actionPaper={selectPaper}
+          actionScissors={selectScissors}
+        />
       </div>
       <h2>{`YOU ARE ${name}`}</h2>
       <Button title="Exit" action={exitRoom} />

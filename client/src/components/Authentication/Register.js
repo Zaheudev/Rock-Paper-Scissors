@@ -57,15 +57,15 @@ const Register = () => {
       <section>
         <form onSubmit={SignUp}>
           <div className={classes.control}>
-            <label htmlFor="name">Username</label>
-            <input placeholder="Username" onChange={clearError} type="text" id="name" />
+            <label htmlFor="name"><p>Username</p></label>
+            <input onChange={clearError} type="text" id="name" />
           </div> 
           <div className={classes.control}>
-            <label htmlFor="password">Password</label>
-            <input placeholder="Password" onChange={clearError} type="password" id="password" />
+            <label htmlFor="password"><p>Password</p></label>
+            <input onChange={clearError} type="password" id="password" />
           </div>
           <p className={classes.error}>{error}</p>
-          <Button title="Register" type={"submit"} />
+          <Button size={"25px"} className={classes.paragraph} title="Register" type={"submit"} />
           <Button title="Cancel" action={Cancel} type={"button"} />
         </form>
       </section>

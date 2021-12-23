@@ -53,12 +53,12 @@ const Login = () => {
       <section>
         <form onSubmit={SignIn}>
           <div className={classes.control}>
-            <label htmlFor="name">Username</label>
-            <input placeholder="Username" type="text" id="name" />
+            <label htmlFor="name"><p>Username</p></label>
+            <input type="text" id="name" />
           </div>
           <div className={classes.control}>
-            <label htmlFor="password">Password</label>
-            <input placeholder="Password" type="password" id="password" />
+            <label htmlFor="password"><p>Password</p></label>
+            <input type="password" id="password" />
           </div>
           <p className={classes.error}>{error}</p>
           <Button title="Login" type={"submit"} />

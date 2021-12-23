@@ -6,7 +6,7 @@ import Register from "./Register";
 
 import classes from "./Authenticate.module.css";
 
-import image from "../../assets/logo1.png";
+import image from "../../assets/logo1-big.png";
 
 import Button from "../UI/Button";
 
@@ -26,8 +26,12 @@ const Authenticate = () => {
 
   let flag = (
     <div className={classes.card}>
-      <Button title={"Login"} action={LogIn} />
-      <Button title={"Register"} action={SignUp} />
+      <div className={classes.login}>
+        <Button size={"40px"} title={"Login"} action={LogIn} />
+      </div>
+      <div className={classes.register}>
+        <Button size={"40px"} title={"Register"} action={SignUp} />
+      </div>
     </div>
   );
 
@@ -39,9 +43,12 @@ const Authenticate = () => {
 
   return (
     <div>
-      <header>
-      <img alt="logo" draggable="false" src={image}></img>
-      </header>
+      <img
+        className={classes.image}
+        alt="logo"
+        draggable="false"
+        src={image}
+      ></img>
       <div>{flag}</div>
     </div>
   );

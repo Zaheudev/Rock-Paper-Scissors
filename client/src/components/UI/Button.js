@@ -2,7 +2,13 @@ import React from "react";
 
 import classes from "./Button.module.css";
 
+
+
 const Button = (props) => {
+  const style = {
+    margin: 'auto',
+    fontSize: props.size,
+  };
   return (
     <button
       disabled={props.state}
@@ -10,8 +16,9 @@ const Button = (props) => {
       onClick={props.action}
       type={props.type}
       form={props.form}
+      src={props.src}
     >
-      {props.title}
+      <p style={style}>{props.title}</p>
     </button>
   );
 };

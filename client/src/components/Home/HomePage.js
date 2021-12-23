@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Button from "../UI/Button";
 import classes from "./HomePage.module.css";
 
-import image from "../../assets/logo1.png";
+import image from "../../assets/logo1-big.png";
 import Modal from "../UI/Modal";
 import CodeForm from "./CodeForm";
 import { client, Message } from "../../App";
@@ -37,17 +37,17 @@ const HomePage = (props) => {
         </div>
       </header>
       <div className={classes.page}>
-        <Button title={"Play vs AI!"} action={props.sendBotData} />
         <Button title={"Play vs Stranger!"} action={props.sendMpData} />
+        <Button title={"Play vs BOT!"} action={props.sendBotData} />
         <Button
-          title={"Join With Code!"}
+          title={"Join Room!"}
           action={showFormButton}
         />
         {showForm && <CodeForm name={username} />}
-        <Button title={"Log Out"} action={props.logOut} />
       </div>
       <footer>
         <p>{`You are logged as ${username}`}</p>
+        <Button title={"Log Out"} action={props.logOut} />
       </footer>
     </div>
   );

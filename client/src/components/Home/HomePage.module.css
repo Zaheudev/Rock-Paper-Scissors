@@ -1,11 +1,9 @@
 .page {
   margin: 5rem auto;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
   width: 25rem;
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
-  background-color: #474e5c;
 }
 
 img {
@@ -37,4 +35,10 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.App {
+  background-image: url('../../assets/background2.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%; 
 }

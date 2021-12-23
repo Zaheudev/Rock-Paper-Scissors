@@ -1,0 +1,30 @@
+.room {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.outter {
+  position: absolute;
+  bottom: 450px;
+  left: 65%;
+}
+
+.room h1, h3{
+    font-size: 50px;
+}
+
+.purple {
+  background-image: linear-gradient(
+    90deg,
+    #b48aff,
+    #cce0f4,
+    #6e15ff,
+    #949cd7,
+    #0075be,
+    #0001bf
+  );
+  background-clip: text;
+  color: transparent;
+}

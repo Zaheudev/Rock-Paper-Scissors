@@ -13,5 +13,16 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+}
+
+p{
+  background-image: linear-gradient(90deg, #D09D33, #F4F445, #F3F042, #C6842E, #E5BE1C, #DCAC21);
+  background-clip: text;
+  color: transparent;
+}
+
+h1, h2, h3, h4{
+  background-image: linear-gradient(90deg, #D09D33, #F4F445, #F3F042, #C6842E, #E5BE1C, #DCAC21);
+  background-clip: text;
+  color: transparent;
 }
