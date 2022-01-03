@@ -38,7 +38,7 @@ const Login = () => {
     } else if (pass.trim().length < 6 && username.trim().length > 3) {
       dispatch(authActions.setError("Password too short! over 6 chars"));
     } else {
-      dispatch(authActions.setError("Insert correct data"));
+      dispatch(authActions.setError("Connecting..."));
     }
   };
 

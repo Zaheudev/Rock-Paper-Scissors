@@ -9,15 +9,19 @@ import { dataActions } from "./store/data.js";
 import { authActions } from "./store/auth.js";
 import PvPRoom from "./components/Rooms/PvPRoom";
 import Authenticate from "./components/Authentication/Authenticate";
-import backgroundImage1 from '../src/assets/background1.png';
-import backgroundImage2 from '../src/assets/background2.png';
+import backgroundImage1 from "../src/assets/background1.png";
+import backgroundImage2 from "../src/assets/background2.png";
 
 var W3CWebSocket = require("websocket").w3cwebsocket;
 
-export var client = new W3CWebSocket("ws://localhost:3001/", "echo-protocol");
+export var client = new W3CWebSocket(
+  "wss://cryptongames.net/server",
+  "echo-protocol"
+);
 
 client.onerror = function () {
   console.log("Connection Error");
+  window.location.reload();
 };
 
 client.onopen = function () {
@@ -191,11 +195,19 @@ const App = () => {
     dispatch(dataActions.setState(state));
     dispatch(dataActions.setTurn(turn));
   };
-  
 
-  return <div style={{   backgroundImage: `url(${bg})`,
-  backgroundRepeat: `no-repeat`,
-  backgroundSize: `100% 100%`}} className="App">{flag}</div>;
+  return (
+    <div
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundRepeat: `no-repeat`,
+        backgroundSize: `100% 100%`,
+      }}
+      className="App"
+    >
+      {flag}
+    </div>
+  );
 };
 
 export default App;
