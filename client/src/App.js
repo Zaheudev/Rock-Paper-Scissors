@@ -11,26 +11,17 @@ import PvPRoom from "./components/Rooms/PvPRoom";
 import Authenticate from "./components/Authentication/Authenticate";
 import backgroundImage1 from "../src/assets/background1.png";
 import backgroundImage2 from "../src/assets/background2.png";
+import ReconnectingWebSocket from "reconnecting-websocket";
 
-var W3CWebSocket = require("websocket").w3cwebsocket;
-
-export var client = new W3CWebSocket(
-  "wss://cryptongames.net/server",
-  "echo-protocol"
+export var client = new ReconnectingWebSocket(
+  "ws://cryptongames.net/server",
+  "echo-protocol",
+  {
+    reconnectInterval: 50,
+    minReconnectionDelay: 0,
+    reconnectionDelayGrowFactor: 100,
+  }
 );
-
-client.onerror = function () {
-  console.log("Connection Error");
-  window.location.reload();
-};
-
-client.onopen = function () {
-  console.log("WebSocket Client Connected");
-};
-
-client.onclose = function () {
-  console.log("echo-protocol Client Closed");
-};
 
 export function Message(type, data) {
   this.type = type;
@@ -44,7 +35,23 @@ const App = () => {
   const IsAuthenticated = useSelector((state) => state.auth.IsAuthenticated);
   const key = useSelector((state) => state.data.userKey);
   const [roundWinner, setRoundWinner] = useState(null);
+  const [status, setStatus] = useState("CONNECTING...");
   const dispatch = useDispatch();
+
+  client.onerror = function () {
+    console.log("Connection Error");
+    setStatus("connection failed, be patient. Reconnecting...");
+  };
+
+  client.onopen = function () {
+    console.log("WebSocket Client Connected");
+    setStatus("connected to server");
+  };
+
+  client.onclose = function () {
+    console.log("echo-protocol Client Closed");
+    setStatus("connection failed, , be patient. Reconnecting...");
+  };
 
   client.onmessage = function (message) {
     let msg = JSON.parse(message.data);
@@ -136,6 +143,7 @@ const App = () => {
   };
 
   const sendBotMsj = () => {
+    console.log(client);
     client.send(
       JSON.stringify(new Message("playAI", localStorage.getItem("username")))
     );
@@ -206,6 +214,7 @@ const App = () => {
       className="App"
     >
       {flag}
+      <p>{status}</p>
     </div>
   );
 };

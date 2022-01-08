@@ -1,6 +1,6 @@
 import React from "react";
 
-import classes from './Button.module.css';
+import classes from "./Button.module.css";
 
 const ButtonImage = (props) => {
   return (
@@ -10,7 +10,7 @@ const ButtonImage = (props) => {
       onClick={props.action}
       type={props.type}
     >
-      <img alt={props.alt} src={props.symbol} width="50" height="50"/>
+      <img alt={props.alt} src={props.symbol} width="50" height="50" />
     </button>
   );
 };

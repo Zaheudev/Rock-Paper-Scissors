@@ -1,8 +1,15 @@
 import React from "react";
+import { useSound } from "use-sound";
 
+import rockSound from "../../sounds/rock.mp4";
+import paperSound from "../../sounds/paper.mp4";
+import scissorsSound from "../../sounds/scissor.mp4";
 import classes from "./ButtonsContainer.module.css";
 
 const ButtonContainer = (props) => {
+  const [rockEvent] = useSound(rockSound, {interrupt:true, volume: 0.1});
+  const [paperEvent] = useSound(paperSound, {interrupt:true, volume: 0.5});
+  const [scissorsEvent] = useSound(scissorsSound, {interrupt:true, volume: 0.3});
   let class1 = null;
   class1 =
     props.color === "purple" ? classes.containerPurple : classes.container;
@@ -11,6 +18,7 @@ const ButtonContainer = (props) => {
       <button
         disabled={props.state}
         className={classes.button}
+        onMouseDown={rockEvent}
         onClick={props.actionRock}
         type={props.type}
       >
@@ -26,6 +34,7 @@ const ButtonContainer = (props) => {
       <button
         disabled={props.state}
         className={classes.button}
+        onMouseDown={paperEvent}
         onClick={props.actionPaper}
         type={props.type}
       >
@@ -41,6 +50,7 @@ const ButtonContainer = (props) => {
       <button
         disabled={props.state}
         className={classes.button}
+        onMouseDown={scissorsEvent}
         onClick={props.actionScissors}
         type={props.type}
       >
