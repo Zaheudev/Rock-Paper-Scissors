@@ -43,7 +43,7 @@ const Room = (props) => {
       <div className={classes.outterContainer}>
         <div className={classes.container}>
           <h2>Balance</h2>
-          <p>0.00 <img src={binanceImg} width="35" height="35"></img></p>
+          <p>0.00 <img src={binanceImg} alt="binance-logo" width="35" height="35"></img></p>
         </div>
       </div>
     </React.Fragment>
