@@ -21,7 +21,6 @@ import enemyScissors from "../../assets/scissors2.png";
 
 const BotRoom = (props) => {
   const [symbol, setSymbol] = useState("");
-  const [roundWinner] = useState(null);
   const [button, setButton] = useState(false);
   const name = useSelector((state) => state.data.name);
   const enemySymbol = useSelector((state) => state.data.enemySymbol);
@@ -57,6 +56,10 @@ const BotRoom = (props) => {
         break;
       case "NewRound":
         dispatch(dataActions.newRound());
+        break;
+      case "playWithBotConfirm":
+        insertData(msg.data.user.name, msg.data.id, msg.data.bot.name, 1);
+        break;
     }
   };
 
@@ -96,10 +99,28 @@ const BotRoom = (props) => {
     );
   };
 
+  const insertData = (name, code, enemyName, key) => {
+    dispatch(dataActions.setName(name));
+    dispatch(dataActions.setCode(code));
+    dispatch(dataActions.setEnemyName(enemyName));
+    dispatch(dataActions.setUserKey(key));
+  };
+
+
   const exitRoom = () => {
     client.send(JSON.stringify(new Message("ExitBotRoom", code)));
     dispatch(dataActions.clear());
     dispatch(pageActions.exitBot());
+  };
+
+  const playAgainAction = () => {
+    client.send(
+      JSON.stringify(new Message("playAI", localStorage.getItem("username")))
+    );
+    setButton(false);
+    setSymbol("");
+    dispatch(dataActions.playAgainWithBot());
+    
   };
 
   let classFlag = null;
@@ -127,7 +148,6 @@ const BotRoom = (props) => {
           enemyName={enemyName}
           client={symbol}
           enemySymbol={enemySymbol}
-          winner={roundWinner}
         />
         {button && (
           <h1 className={classFlag}>{`${winner ? name : enemyName} WON`}</h1>
@@ -148,7 +168,7 @@ const BotRoom = (props) => {
       <h2>{`YOU ARE ${name}`}</h2>
       <Button title="Exit" action={exitRoom} />
       <div className={classes.room}>
-        <Room />
+        <Room function={playAgainAction} />
       </div>
     </React.Fragment>
   );

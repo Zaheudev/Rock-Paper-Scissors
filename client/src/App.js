@@ -14,7 +14,7 @@ import backgroundImage2 from "../src/assets/background2.png";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 export var client = new ReconnectingWebSocket(
-  "wss://cryptongames.net/server",
+  "ws://localhost:3001",
   "echo-protocol",
   {
     reconnectInterval: 50,
@@ -23,9 +23,11 @@ export var client = new ReconnectingWebSocket(
   }
 );
 
-export function Message(type, data) {
-  this.type = type;
-  this.data = data;
+export class Message {
+  constructor(type, data) {
+    this.type = type;
+    this.data = data;
+  }
 }
 
 const App = () => {

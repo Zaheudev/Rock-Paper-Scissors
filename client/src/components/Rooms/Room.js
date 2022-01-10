@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Button from "../UI/Button";
 
 import classes from "./Room.module.css";
 
@@ -11,6 +12,7 @@ const Room = (props) => {
 
   let enemyResult = null;
   let userResult = null;
+  let showButton = false;
 
   if (key === 2) {
     userResult = `${user2Wins}`;
@@ -18,6 +20,10 @@ const Room = (props) => {
   } else if (key === 1) {
     userResult = `${user1Wins}`;
     enemyResult = `${user2Wins}`;
+  }
+
+  if (user1Wins >= 2 || user2Wins >= 2) {
+    showButton = true;
   }
 
   return (
@@ -28,6 +34,7 @@ const Room = (props) => {
         <h1>:</h1>
         <h1>{userResult}</h1>
       </div>
+      {showButton && <Button title="Play Again!" action={props.function}></Button>}
     </div>
   );
 };

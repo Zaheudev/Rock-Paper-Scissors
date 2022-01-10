@@ -57,9 +57,17 @@ const dataSlice = createSlice({
     newRound(state) {
       state.rounds++;
     },
-
+    
     setWinner(state, action) {
       state.winner = action.payload;
+    },
+
+    playAgainWithBot(state){
+      state.user1Count = 0;
+      state.user2Count = 0;
+      state.winner = "";
+      state.enemySymbol = null;
+      state.rounds = 1;
     },
 
     clear(state) {

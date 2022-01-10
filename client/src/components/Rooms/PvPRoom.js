@@ -86,6 +86,13 @@ const PvPRoom = (props) => {
     dispatch(pageActions.exitMP());
   };
 
+  const playAgainAction = () => {
+    dispatch(dataActions.clear());
+    client.send(
+      JSON.stringify(new Message("playMP", localStorage.getItem("username")))
+    );
+  }
+
   let stateRender = "Your Turn";
 
   if (!turn) {
@@ -159,7 +166,7 @@ const PvPRoom = (props) => {
         <h3>{`CODE: ${code}`}</h3>
         <Button title="Exit" action={exitRoom} />
         <div className={classes.room}>
-          <Room />
+          <Room function={playAgainAction}/>
         </div>
       </div>
     </React.Fragment>
