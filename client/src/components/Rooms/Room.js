@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Button from "../UI/Button";
 
+import binanceImg from '../../assets/binance.png';
 import classes from "./Room.module.css";
 
 const Room = (props) => {
@@ -27,15 +28,25 @@ const Room = (props) => {
   }
 
   return (
-    <div className={classes.outter}>
-      <h3>{`ROUND ${rounds}`}</h3>
-      <div className={classes.room}>
-        <h1 className={classes.purple}>{enemyResult}</h1>
-        <h1>:</h1>
-        <h1>{userResult}</h1>
+    <React.Fragment>
+      <div className={classes.outter}>
+        <h3>{`ROUND ${rounds}`}</h3>
+        <div className={classes.room}>
+          <h1 className={classes.purple}>{enemyResult}</h1>
+          <h1>:</h1>
+          <h1>{userResult}</h1>
+        </div>
+        {showButton && (
+          <Button title="Play Again!" action={props.function}></Button>
+        )}
       </div>
-      {showButton && <Button title="Play Again!" action={props.function}></Button>}
-    </div>
+      <div className={classes.outterContainer}>
+        <div className={classes.container}>
+          <h2>Balance</h2>
+          <p>0.00 <img src={binanceImg} width="35" height="35"></img></p>
+        </div>
+      </div>
+    </React.Fragment>
   );
 };
 
