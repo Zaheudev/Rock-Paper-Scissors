@@ -14,7 +14,7 @@ import backgroundImage2 from "../src/assets/background2.png";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 export var client = new ReconnectingWebSocket(
-  "ws://localhost:3001",
+  "wss://cryptongames.net/server",
   "echo-protocol",
   {
     reconnectInterval: 50,
