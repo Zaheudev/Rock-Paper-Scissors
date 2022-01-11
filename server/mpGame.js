@@ -1,9 +1,13 @@
-function mpGame(user1, user2, id) {
+function mpGame(user1, user2, id, private) {
   this.user1 = user1;
   this.user2 = user2;
   this.id = id;
   this.gameState = "Waiting";
   this.rounds = 3;
+  this.private = private;
+  if (typeof private === "undefined") {
+    this.private = false;
+  }
 
   this.getUser1 = function () {
     return this.user1;
@@ -24,6 +28,10 @@ function mpGame(user1, user2, id) {
   this.getRounds = function () {
     return this.rounds;
   };
+  
+  this.getPrivate = function () {
+    return this.private;
+  }
 
   this.newRound = function () {
     if (this.rounds > 0) {

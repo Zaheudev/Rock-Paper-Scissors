@@ -14,7 +14,7 @@ import backgroundImage2 from "../src/assets/background2.png";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 export var client = new ReconnectingWebSocket(
-  "wss://cryptongames.net/server",
+  "ws://localhost:3001",
   "echo-protocol",
   {
     reconnectInterval: 50,
@@ -145,7 +145,6 @@ const App = () => {
   };
 
   const sendBotMsj = () => {
-    console.log(client);
     client.send(
       JSON.stringify(new Message("playAI", localStorage.getItem("username")))
     );
@@ -154,6 +153,14 @@ const App = () => {
   const sendMultiplayerMsj = () => {
     client.send(
       JSON.stringify(new Message("playMP", localStorage.getItem("username")))
+    );
+  };
+
+  const sendCreateRoomMsj = () => {
+    client.send(
+      JSON.stringify(
+        new Message("createRoom", localStorage.getItem("username"))
+      )
     );
   };
 
@@ -190,6 +197,7 @@ const App = () => {
         logOut={logOut}
         sendMpData={sendMultiplayerMsj}
         sendBotData={sendBotMsj}
+        createRoom={sendCreateRoomMsj}
       />
     );
     bg = backgroundImage2;

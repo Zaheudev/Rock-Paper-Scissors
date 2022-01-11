@@ -85,7 +85,7 @@ wsServer.on("request", function (request) {
         if (mpGames.size != 0) {
           let gameFound = false;
           for (const [id, game] of mpGames) {
-            if (game.getUser2() === null && game.getState() === "Waiting") {
+            if (game.getUser2() === null && game.getState() === "Waiting" && !game.getPrivate()) {
                 if(game.getUser1().getName() !== msg.data){
                   gameFound = true;
                   game.setUser2(new User(msg.data, con.id, con, false, 2));
@@ -144,6 +144,21 @@ wsServer.on("request", function (request) {
           );
           console.log(codeMP);
         }
+        break;
+      case "createRoom":
+        console.log("Creating room...");
+        let codeMP = generateCode(4);
+        mpGames.set(
+          codeMP,
+          new mpGame(new User(msg.data, con.id, con, true, 1), null, codeMP, true)
+        );
+        users.set(con.id, mpGames.get(codeMP).getUser1());
+        con.send(
+          JSON.stringify(
+            new Message("playMpConfirm", mpGames.get(codeMP)),
+            getCircularReplacer()
+          )
+        );
         break;
       case "ClientSymbolMP":
         let tempGame = mpGames.get(msg.data.code);

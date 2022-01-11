@@ -38,6 +38,7 @@ const HomePage = (props) => {
       </header>
       <div className={classes.page}>
         <Button title={"Play vs Stranger!"} action={props.sendMpData} />
+        <Button title={"Create Room"} action={props.createRoom} />
         <Button title={"Play vs BOT!"} action={props.sendBotData} />
         <Button
           title={"Join Room!"}
